@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyEdu - 讲题研讨 (IB/AP)</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/i18n.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 添加语法高亮支持 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <!-- 添加MathJax数学公式支持 -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        /* 笔记本风格的主容器
+         * 设置相对定位以便子元素可以相对它定位
+         * 高度设置为视窗高度减去140px的上下边距
+         */
+        .notebook-container {
+            position: relative;
+            height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 笔记本背景样式
+         * 使用绝对定位铺满容器
+         * 创建横线背景图案模拟笔记本纸张效果
+         */
+        .notebook-background {
+            position: absolute;
+            inset: 0;
+            background-color: #f8f9fa;
+            background-image: linear-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 100% 2rem;
+            background-position: 0 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* 笔记本左侧红色竖线
+         * 模拟真实笔记本的装订线
+         */
+        .notebook-margin {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 16px;
+            width: 1px;
+            background-color: #f8c4c4;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 聊天界面布局
+         * 使用flex布局实现左侧边栏和右侧聊天区域
+         */
+        .chat-layout {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+
+        /* 左侧边栏样式
+         * 固定宽度300px，添加滚动条
+         */
+        .chat-sidebar {
+            flex: 0 0 240px;
+            padding: 16px;
+            background: white;
+            overflow-y: auto;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        /* 题目详情盒子样式 */
+        .question-detail-box {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* 侧边栏小节样式 */
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-section h2, .sidebar-section h3 {
+            margin-bottom: 15px;
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-actions {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        /* 聊天区域主体样式
+         * 使用flex布局使内容可以自适应高度
+         */
+        .chat-notebook {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        /* 聊天区域头部样式 */
+        .notebook-header {
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            z-index: 10;
+        }
+
+        /* 聊天内容区域样式
+         * 设置滚动条和左侧padding留出空间给装订线
+         */
+        .notebook-content {
+            position: relative;
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            padding-left: 5rem;
+        }
+
+        /* 消息列表容器
+         * 使用flex布局垂直排列消息
+         */
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding-bottom: 1rem;
+        }
+
+        /* 单条消息项样式 */
+        .message-item {
+            position: relative;
+        }
+
+        /* 消息容器样式
+         * 使用flex布局控制消息的排列方向
+         */
+        .message-container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* 用户消息靠右对齐 */
+        .message-container.user {
+            justify-content: flex-end;
+        }
+
+        /* 消息内容样式
+         * 包含头像和气泡的容器
+         */
+        .message-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            max-width: 85%;
+        }
+
+        /* 用户消息内容反向排列 */
+        .message-container.user .message-content {
+            flex-direction: row-reverse;
+            margin-left: auto;
+        }
+
+        /* 头像样式 */
+        .avatar {
+            flex-shrink: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e5e7eb;
+            margin-top: 4px;
+        }
+
+        /* 学生头像特殊样式 */
+        .student-avatar {
+            background-color: #dbeafe;
+        }
+
+        /* 教师头像特殊样式 */
+        .teacher-avatar {
+            background-color: #fef3c7;
+        }
+
+        /* 头像图标基础样式 */
+        .avatar-icon {
+            width: 1rem;
+            height: 1rem;
+            color: #4b5563;
+        }
+
+        /* 学生图标颜色 */
+        .student-icon {
+            color: #1d4ed8;
+        }
+
+        /* 教师图标颜色 */
+        .teacher-icon {
+            color: #b45309;
+        }
+
+        .message-bubble-container {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+        }
+
+        .message-container.user .message-bubble-container {
+            text-align: right;
+            max-width: calc(100% - 2.5rem); /* 减去头像和间距的宽度 */
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.125rem;
+        }
+
+        .message-container.user .message-header {
+            justify-content: flex-end;
+        }
+
+        .sender-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .student-name {
+            color: #1d4ed8;
+        }
+
+        .teacher-name {
+            color: #b45309;
+        }
+
+        .teacher-badge {
+            margin-right: 0.5rem;
+            padding: 0 0.375rem;
+            font-size: 0.75rem;
+            background-color: #fef3c7;
+            color: #92400e;
+            border-radius: 9999px;
+        }
+
+        .message-bubble {
+            padding: 0rem 0.5rem !important;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            white-space: pre-line;
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            word-break: normal;
+            width: auto;
+            display: inline-block;
+            text-align: left;
+            min-width: fit-content;
+            overflow: visible;
+            box-sizing: content-box;
+        }
+
+        .message-container.user .message-bubble {
+            max-width: 100%;
+            width: fit-content;
+        }
+
+        .user-bubble {
+            min-width: 3rem;
+            word-break: normal;
+            white-space: normal;
+            letter-spacing: normal;
+        }
+
+        .user-bubble .message-text {
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-break: normal;
+            hyphens: auto;
+        }
+
+        .message-text p {
+            word-break: normal;
+        }
+
+        .message-text p:only-child:not(.short-text) {
+            word-break: break-word;
+        }
+
+        .student-bubble {
+            background-color: #eff6ff;
+            border: 1px solid #dbeafe;
+        }
+
+        .teacher-bubble {
+            background-color: #fffbeb;
+            border: 1px solid #fef3c7;
+        }
+
+        .connector-line {
+            position: absolute;
+            left: 0.875rem;
+            top: 1.75rem;
+            height: calc(100% - 1rem);
+            width: 1px;
+            background-color: #e5e7eb;
+        }
+
+        .expand-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 1.25rem;
+            height: 1.25rem;
+            padding: 0;
+            margin-left: 0.25rem;
+            margin-top: 0.125rem;
+            flex-shrink: 0;
+            color: #6b7280;
+        }
+
+        .message-text {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            max-height: 4.5em;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 教师消息永不折叠 */
+        .teacher-bubble .message-text {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+
+        .message-text.expanded {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .input-area textarea {
+            flex: 1;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 14px;
+            background-color: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .input-area .btn {
+            align-self: flex-end;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .input-area .btn:hover {
+            background-color: #2563eb;
+        }
+
+        .input-area .btn:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        /* 专门为消息内容添加样式 */
+        .message-text p {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* 新增：优化 Markdown 渲染后的样式，特别是教师气泡中的段落和列表间距 */
+        .teacher-bubble .message-text p {
+            margin: 0.3rem 0;
+            line-height: 1.3;
+        }
+        
+        .teacher-bubble .message-text ul,
+        .teacher-bubble .message-text ol {
+            margin: 0.3rem 0;
+            padding-left: 1.2rem;
+        }
+        
+        .teacher-bubble .message-text li {
+            margin: 0.15rem 0;
+            line-height: 1.3;
+        }
+        
+        .teacher-bubble .message-text li p {
+            margin: 0.1rem 0;
+        }
+        
+        .teacher-bubble .message-text h1,
+        .teacher-bubble .message-text h2,
+        .teacher-bubble .message-text h3,
+        .teacher-bubble .message-text h4,
+        .teacher-bubble .message-text h5,
+        .teacher-bubble .message-text h6 {
+            margin: 0.5rem 0 0.3rem 0;
+            line-height: 1.3;
+        }
+
+        /* 暗色模式适配
+         * 根据系统设置自动切换暗色主题
+         */
+        @media (prefers-color-scheme: dark) {
+            .notebook-background {
+                background-color: #111827;
+                background-image: linear-gradient(#374151 1px, transparent 1px);
+            }
+
+            .notebook-margin {
+                background-color: rgba(220, 38, 38, 0.3);
+            }
+
+            .chat-sidebar, .notebook-header, .input-area {
+                background: #1f2937;
+                border-color: #374151;
+            }
+
+            .avatar {
+                background-color: #374151;
+            }
+
+            .student-avatar {
+                background-color: rgba(30, 64, 175, 0.2);
+            }
+
+            .teacher-avatar {
+                background-color: rgba(217, 119, 6, 0.2);
+            }
+
+            .avatar-icon {
+                color: #9ca3af;
+            }
+
+            .student-icon {
+                color: #60a5fa;
+            }
+
+            .teacher-icon {
+                color: #fbbf24;
+            }
+
+            .sender-name {
+                color: #e5e7eb;
+            }
+
+            .student-name {
+                color: #60a5fa;
+            }
+
+            .teacher-name {
+                color: #fbbf24;
+            }
+
+            .teacher-badge {
+                background-color: rgba(217, 119, 6, 0.2);
+                color: #fbbf24;
+            }
+
+            .message-bubble {
+                background-color: rgba(59, 130, 246, 0.1);
+                border: 1px solid rgba(59, 130, 246, 0.2);
+            }
+
+            .student-bubble {
+                background-color: rgba(30, 64, 175, 0.2);
+                border: 1px solid rgba(30, 64, 175, 0.3);
+            }
+
+            .teacher-bubble {
+                background-color: rgba(217, 119, 6, 0.1);
+                border: 1px solid rgba(217, 119, 6, 0.2);
+            }
+
+            .connector-line {
+                background-color: #374151;
+            }
+
+            .input-area textarea {
+                background-color: #374151;
+                border-color: #4b5563;
+                color: #e5e7eb;
+            }
+            
+            /* 暗色模式下的题目详情样式 */
+            .question-detail-box {
+                background-color: #1f2937;
+                border-color: #374151;
+            }
+            
+            .question-title {
+                color: #60a5fa;
+                border-color: #374151;
+            }
+            
+            .question-content {
+                color: #e5e7eb;
+            }
+            
+            .question-content code, .question-content pre {
+                background-color: #111827;
+                border-color: #374151;
+            }
+            
+            .question-content blockquote {
+                border-color: #4b5563;
+                color: #9ca3af;
+            }
+            
+            .option span {
+                color: #60a5fa;
+            }
+        }
+
+        /* 短消息特殊处理
+         * 确保短消息在一行内显示
+         */
+        .short-message {
+            white-space: nowrap !important;
+            min-width: auto !important;
+            padding: 0.3rem 0.8rem !important;
+        }
+        
+        .short-text {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            letter-spacing: normal;
+        }
+
+        /* 列表样式优化
+         * 确保列表在气泡内正确显示
+         */
+        .message-bubble ol {
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
+            padding-left: 1.5rem;
+        }
+        
+        .message-bubble li {
+            margin-bottom: 0.2rem;
+        }
+
+        /* 教师消息气泡样式优化 */
+        .teacher-bubble {
+            max-width: 100%;
+            width: auto;
+            display: block;
+        }
+        
+        /* 覆盖气泡中默认样式，确保内容紧凑显示 */
+        .teacher-bubble .message-text {
+            line-height: 1.3 !important;
+            padding: 0.2rem 0.5rem !important;
+        }
+        
+        /* 教师消息内优化样式 */
+        .teacher-bubble .compact-p {
+            margin: 0.35rem 0 !important;
+            line-height: 1.4 !important;
+        }
+        
+        .teacher-bubble .compact-ul {
+            margin: 0.3rem 0 !important;
+            padding-left: 1.2rem !important;
+        }
+        
+        .teacher-bubble .compact-li {
+            margin: 0.2rem 0 !important;
+        }
+        
+        .teacher-bubble .compact-h3,
+        .teacher-bubble .compact-h4,
+        .teacher-bubble .compact-h5 {
+            margin: 0.5rem 0 0.2rem 0 !important;
+        }
+        
+        /* 强调重要元素，提高可读性 */
+        .teacher-bubble strong {
+            color: #b45309;
+            font-weight: 600;
+        }
+        
+        .teacher-bubble em {
+            font-style: italic;
+            color: #1e40af;
+        }
+        
+        /* 可点击选择题选项 */
+        .mcq-options {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mcq-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            width: 100%;
+            text-align: left;
+            padding: 0.6rem 0.75rem;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #1f2937;
+            transition: all 0.15s;
+        }
+
+        .mcq-option:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+
+        .mcq-option.selected {
+            border-color: #3b82f6;
+            background: #dbeafe;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+
+        .mcq-key {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .mcq-option.selected .mcq-key {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .mcq-text {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        /* 题目选项容器样式 */
+        .option {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .option span {
+            flex-shrink: 0;
+            margin-right: 0.5rem;
+            margin-top: 0.1rem;
+        }
+        
+        .option-content {
+            flex: 1;
+        }
+        
+        /* 展开/折叠按钮样式 */
+        .expand-button {
+            display: inline-block;
+            position: relative;
+            margin-top: 0.3rem;
+            cursor: pointer;
+            color: #3b82f6;
+        }
+
+        /* --- 新增：番茄钟样式 --- */
+        .pomodoro-box {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .pomodoro-time {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1d4ed8;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+        
+        .pomodoro-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .pomodoro-controls button {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 6px;
+            background-color: #3b82f6;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .pomodoro-controls button:hover {
+            background-color: #2563eb;
+        }
+        
+        .pomodoro-controls button.pause-btn {
+            background-color: #f59e0b;
+        }
+        
+        .pomodoro-controls button.pause-btn:hover {
+            background-color: #d97706;
+        }
+        
+        .pomodoro-controls button.reset-btn {
+            background-color: #64748b;
+        }
+        
+        .pomodoro-controls button.reset-btn:hover {
+            background-color: #475569;
+        }
+
+        /* 思考状态与指示器 */
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            width: fit-content;
+            margin: 0.5rem 0;
+        }
+
+        .thinking-indicator .dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .thinking-indicator .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #94a3b8;
+            animation: thinking-bounce 1.2s infinite ease-in-out;
+        }
+
+        .thinking-indicator .dot:nth-child(1) { animation-delay: 0s; }
+        .thinking-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+        .thinking-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes thinking-bounce {
+            0%, 60%, 100% { transform: translateY(0); background-color: #94a3b8; }
+            30% { transform: translateY(-6px); background-color: #3b82f6; }
+        }
+
+        .thinking-label {
+            font-size: 0.78rem;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* 进度条条纹 */
+        .thinking-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6 0%, #93c5fd 50%, #3b82f6 100%);
+            background-size: 200% 100%;
+            animation: thinking-slide 1.5s linear infinite;
+            border-radius: 2px;
+            margin-top: 0.4rem;
+        }
+
+        @keyframes thinking-slide {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 暗色模式适配番茄钟 */
+        @media (prefers-color-scheme: dark) {
+            .pomodoro-box {
+                background: linear-gradient(135deg, #1e3a8a, #172554);
+                border-color: #1e40af;
+            }
+            .pomodoro-time {
+                color: #93c5fd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 固定导航栏 -->
+    <nav class="fixed-nav">
+        <div class="nav-logo">EasyEdu</div>
+        <div class="nav-links">
+            <a href="/" class="nav-item" data-i18n="nav_home">Home</a>
+            <a href="/problems" class="nav-item active" data-i18n="nav_practice">Practice</a>
+            <a href="/knowledge" class="nav-item" data-i18n="nav_knowledge">Knowledge</a>
+            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Upload</span>
+            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Flashcards</span>
+            <button id="lang-toggle-btn" onclick="toggleLang()" style="margin-left:12px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:0.85rem;font-weight:600;color:#374151;">中文</button>
+        </div>
+    </nav>
+    
+    <div class="main-container">
+        <div class="chat-layout">
+            <!-- 左侧：题目详情和相关资料 -->
+            <div class="chat-sidebar">
+                <div class="sidebar-section">
+                    <h2 data-i18n="focus_mode">Focus Timer</h2>
+                    <div class="pomodoro-box">
+                        <div id="pomodoro-time" class="pomodoro-time">25:00</div>
+                        <div class="pomodoro-controls">
+                            <button id="pomo-start-btn" onclick="startPomodoro()" data-i18n="pomo_start">Start</button>
+                            <button id="pomo-pause-btn" onclick="pausePomodoro()" class="pause-btn" style="display:none;" data-i18n="pomo_pause">Pause</button>
+                            <button id="pomo-reset-btn" onclick="resetPomodoro()" class="reset-btn" data-i18n="pomo_reset">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <h2 data-i18n="q_detail">Question</h2>
+                    <div id="question-detail" class="question-detail-box"></div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 data-i18n="related_kp">Related Knowledge</h3>
+                    <ul id="knowledge-points-list"></ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3 data-i18n="similar_q">Similar Questions</h3>
+                    <ul id="similar-questions-list"></ul>
+                </div>
+                
+                <div class="sidebar-actions">
+                        <button id="back-btn" class="action-btn" data-i18n="back">Back</button>
+                </div>
+            </div>
+            
+            <!-- 右侧：笔记本风格的对话界面 -->
+            <div class="chat-notebook">
+                <div class="notebook-header">
+                    <h2 data-i18n="chat_header">Question Practice</h2>
+                </div>
+                
+                <div class="notebook-container">
+                    <!-- 笔记本背景 -->
+                    <div class="notebook-background"></div>
+                    <div class="notebook-margin"></div>
+                    
+                    <!-- 内容区域 -->
+                    <div class="notebook-content">
+                        <div id="chat-messages" class="chat-messages"></div>
+                    </div>
+                    
+                    <!-- 输入区域固定在底部 -->
+                    <div class="input-area">
+                        <textarea id="user-input" data-i18n-placeholder="placeholder" placeholder="Explain your reasoning here..."></textarea>
+                        <button id="send-btn" class="btn" data-i18n="send">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const questionId = "{{ question_id }}";
+        
+        // 展开/折叠功能
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('expand-button') || e.target.closest('.expand-button')) {
+                const button = e.target.classList.contains('expand-button') ? e.target : e.target.closest('.expand-button');
+                // 跳过教师消息的展开按钮处理
+                if (button.closest('.teacher-bubble')) {
+                    return;
+                }
+                
+                const messageText = button.parentElement.querySelector('.message-text');
+                messageText.classList.toggle('expanded');
+                
+                // 切换按钮图标
+                if (messageText.classList.contains('expanded')) {
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                    `;
+                } else {
+                    button.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    `;
+                }
+            }
+        });
+    </script>
+    <script>
+        // --- 番茄钟逻辑 ---
+        let pomoTimeLeft = 25 * 60; // 默认25分钟
+        let pomoInterval = null;
+        const pomoTimeDisplay = document.getElementById('pomodoro-time');
+        const pomoStartBtn = document.getElementById('pomo-start-btn');
+        const pomoPauseBtn = document.getElementById('pomo-pause-btn');
+
+        function updatePomoDisplay() {
+            const m = Math.floor(pomoTimeLeft / 60).toString().padStart(2, '0');
+            const s = (pomoTimeLeft % 60).toString().padStart(2, '0');
+            pomoTimeDisplay.textContent = `${m}:${s}`;
+        }
+
+        function startPomodoro() {
+            if (pomoInterval) return; // 防止重复点击
+            
+            pomoStartBtn.style.display = 'none';
+            pomoPauseBtn.style.display = 'inline-block';
+            
+            pomoInterval = setInterval(() => {
+                pomoTimeLeft--;
+                updatePomoDisplay();
+                
+                if (pomoTimeLeft <= 0) {
+                    clearInterval(pomoInterval);
+                    pomoInterval = null;
+                    setTimeout(() => {
+                        alert((typeof t === 'function') ? t('pomo_done') : 'Focus session complete! Take a 5-minute break.');
+                        resetPomodoro();
+                    }, 10);
+                }
+            }, 1000);
+        }
+
+        function pausePomodoro() {
+            clearInterval(pomoInterval);
+            pomoInterval = null;
+            pomoStartBtn.style.display = 'inline-block';
+            pomoStartBtn.textContent = (typeof t === 'function') ? t('pomo_resume') : 'Resume';
+            pomoPauseBtn.style.display = 'none';
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomoInterval);
+            pomoInterval = null;
+            pomoTimeLeft = 25 * 60;
+            updatePomoDisplay();
+            pomoStartBtn.style.display = 'inline-block';
+            pomoStartBtn.textContent = (typeof t === 'function') ? t('pomo_start') : 'Start';
+            pomoPauseBtn.style.display = 'none';
+        }
+        
+        // 页面加载时初始化显示
+        updatePomoDisplay();
+        
+    // 【必须加上这个闭合标签】告诉浏览器 JS 代码结束了
+    </script>
+
+    <script>document.addEventListener('DOMContentLoaded', initI18n);</script>
+    <script src="/static/js/chat.js"></script>
+</body>
+</html> 

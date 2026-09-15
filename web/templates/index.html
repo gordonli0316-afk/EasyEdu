@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyEdu — IB/AP Tutoring</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1a202c; background: #fff; }
+        .page-wrap { max-width: 860px; margin: 0 auto; padding: 80px 24px 60px; }
+
+        /* hero */
+        .hero { text-align: center; padding: 48px 0 40px; border-bottom: 1px solid #e8ecf0; }
+        .hero h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 12px; }
+        .hero h1 span { color: #2563eb; }
+        .hero p { font-size: 1.05rem; color: #4a5568; max-width: 540px; margin: 0 auto 20px; line-height: 1.65; }
+        .hero-cta { display: inline-block; background: #2563eb; color: #fff; padding: 11px 28px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+        .hero-cta:hover { background: #1d4ed8; }
+
+        /* how it works */
+        .section { padding: 48px 0 8px; }
+        .section-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 28px; color: #111; }
+
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .step { background: #f8fafc; border: 1px solid #e8ecf0; border-radius: 8px; padding: 22px 20px; }
+        .step-num { font-size: 0.78rem; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .step h3 { font-size: 1rem; font-weight: 600; margin: 0 0 8px; }
+        .step p { font-size: 0.88rem; color: #64748b; line-height: 1.6; margin: 0; }
+
+        /* subjects */
+        .subjects { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+        .subject-tag { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+
+        /* nav override */
+        .nav-logo { font-size: 1.05rem; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <nav class="fixed-nav">
+        <div class="nav-logo">EasyEdu</div>
+        <div class="nav-links">
+            <a href="/" class="nav-item active" data-i18n="nav_home">Home</a>
+            <a href="/problems" class="nav-item" data-i18n="nav_practice">Practice</a>
+            <a href="/knowledge" class="nav-item" data-i18n="nav_knowledge">Knowledge</a>
+            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Upload</span>
+            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Flashcards</span>
+            <button id="lang-toggle-btn" onclick="toggleLang()" style="margin-left:12px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:0.85rem;font-weight:600;color:#374151;">中文</button>
+        </div>
+    </nav>
+    <script src="/static/js/i18n.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', initI18n);</script>
+
+    <div class="page-wrap">
+
+        <div class="hero">
+            <h1><span>EasyEdu</span> — <span data-i18n="hero_sub">IB / AP Tutoring</span></h1>
+            <p data-i18n="hero_desc">
+                Instead of just looking at standard answers, you take the lead and explain the solution.
+                That one shift — you explain, peers question and tutors guide — turns fleeting memory into real mastery.
+            </p>
+            <a href="/problems" class="hero-cta" data-i18n="hero_cta">Start practising</a>
+        </div>
+
+        <div class="section">
+            <div class="section-title" data-i18n="hiw_title">How it works</div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num" data-i18n="hiw_s1_num">Step 1</div>
+                    <h3 data-i18n="hiw_s1_title">Pick a question</h3>
+                    <p data-i18n="hiw_s1_desc">Browse questions organised by AP and IB course and chapter. Every question comes from the actual textbook.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num" data-i18n="hiw_s2_num">Step 2</div>
+                    <h3 data-i18n="hiw_s2_title">Explain your reasoning</h3>
+                    <p data-i18n="hiw_s2_desc">Type your answer as if you're teaching a classmate. Don't just copy the formula — explain why it works.</p>
+                </div>
+                <div class="step">
+                    <div class="step-num" data-i18n="hiw_s3_num">Step 3</div>
+                    <h3 data-i18n="hiw_s3_title">Get pushed deeper</h3>
+                    <p data-i18n="hiw_s3_desc">If your explanation is right but surface-level, your study partner asks a follow-up. If there is a gap, your tutor steps in with targeted hints.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title" data-i18n="courses_title">Courses available</div>
+            <div class="subjects">
+                <span class="subject-tag">AP Statistics</span>
+                <span class="subject-tag">AP Physics</span>
+                <span class="subject-tag">AP CS Principles</span>
+                <span class="subject-tag">IB Biology</span>
+                <span class="subject-tag">IB Computer Science</span>
+                <span class="subject-tag">IB Math AA HL</span>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

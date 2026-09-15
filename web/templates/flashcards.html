@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyEdu - 知识抽认卡</title>
+    <style>
+        /* --- 基础与全局样式 --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+    
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        /* --- 抽认卡 3D 核心逻辑 --- */
+        .flashcard-wrapper {
+            perspective: 1000px; /* 创造 3D 空间 */
+            width: 100%;
+            max-width: 500px;
+            height: 350px;
+            margin-bottom: 30px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d; /* 维持子元素的 3D 层级 */
+            cursor: pointer;
+        }
+
+        /* 触发翻转的类 */
+        .flashcard-wrapper.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* 正反面通用样式 */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* 翻转后背面隐身 */
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* 正面样式（问题） */
+        .card-front {
+            background-color: #ffffff;
+            border-top: 6px solid #3b82f6;
+        }
+
+        /* 背面样式（答案） */
+        .card-back {
+            background-color: #eff6ff;
+            border-top: 6px solid #10b981;
+            transform: rotateY(180deg); /* 初始就背对用户 */
+        }
+
+        /* --- 卡片内部排版 --- */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #111827;
+            margin: 0;
+        }
+
+        .badge {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            flex: 1;
+            font-size: 1.05rem;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .answer-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 15px;
+        }
+
+        .explanation {
+            background-color: rgba(255,255,255,0.6);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .flip-hint {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin-top: 15px;
+        }
+
+        /* --- 控制按钮组 --- */
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-nav {
+            background-color: #ffffff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .btn-nav:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .counter {
+            font-size: 1rem;
+            color: #4b5563;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>EasyEdu 知识抽认卡</h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <input type="file" id="json-upload" accept=".json" class="btn-nav" style="padding: 10px;">
+    </div>
+    <p class="subtitle">点击卡片查看答案与解析</p>
+
+    <div class="flashcard-wrapper" id="flashcard" onclick="toggleFlip()">
+        <div class="card-inner">
+            
+            <div class="card-front">
+                <div class="card-header">
+                    <h3 class="card-title" id="q-title">加载中...</h3>
+                    <span class="badge" id="q-type">概念题</span>
+                </div>
+                <div class="card-body" id="q-content">
+                    正在读取题目数据...
+                </div>
+                <div class="flip-hint">👆 点击卡片翻转</div>
+            </div>
+
+            <div class="card-back">
+                <div class="card-header">
+                    <h3 class="card-title">标准答案</h3>
+                </div>
+                <div class="card-body">
+                    <div class="answer-highlight" id="a-content">A</div>
+                    <div class="explanation">
+                        <strong>解析：</strong><br>
+                        <span id="a-explanation">暂无解析</span>
+                    </div>
+                </div>
+                <div class="flip-hint">👆 点击卡片翻回正面</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-nav" onclick="prevCard()">◀ 上一题</button>
+        <span class="counter" id="card-counter">1 / 1</span>
+        <button class="btn-nav" onclick="nextCard()">下一题 ▶</button>
+    </div>
+
+
+    <script>
+        // ==========================================
+        // 1. 数据层：定义变量与模拟数据
+        // ==========================================
+        let questionsData = []; // 初始化一个空数组，等待装载真实题库
+        let currentIndex = 0;   // 记录当前显示到第几题
+
+        // 字典映射：将英文的字段翻译成中文展示
+        const typeDict = {
+            "concept": "概念题",
+            "calculation": "计算题",
+            "comprehensive": "综合题"
+        };
+
+        // 监听文件上传按钮的变动
+        document.getElementById('json-upload').addEventListener('change', function(event) {
+            const file = event.target.files[0]; // 获取用户选中的文件
+            if (!file) return;
+
+            // 创建一个 FileReader 对象，它是浏览器提供的“文件阅读器”
+            const reader = new FileReader();
+            
+            // 告诉阅读器：读完文件后，执行这个函数
+            reader.onload = function(e) {
+                try {
+                    // e.target.result 就是读出来的纯文本，我们把它转成 JSON
+                    let rawData = JSON.parse(e.target.result);
+                    
+                    // 兜底逻辑：如果是一个字典，就包成数组；如果是数组，就直接用
+                    if (!Array.isArray(rawData)) {
+                        questionsData = [rawData]; 
+                    } else {
+                        questionsData = rawData;
+                    }
+
+                    // 数据准备好了，立刻渲染第 0 题！
+                    if (questionsData.length > 0) {
+                        currentIndex = 0;
+                        renderCard(currentIndex);
+                        alert("题库加载成功！");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("读取失败：JSON 格式有语法错误！");
+                }
+            };
+            
+            // 正式下达指令：以文本形式读取这个文件
+            reader.readAsText(file);
+        });
+
+        // ==========================================
+        // 2. 核心引擎：异步获取 JSON 数据
+        // ==========================================
+        //async function loadQuestions() {
+            //try {
+                // 【实战提示】这里写你本地或服务器的真实 JSON 路径
+                // const response = await fetch('/data/ds_data/questions/chapter_2.json');
+                // questionsData = await response.json();
+                
+                // 为了确保你现在双击 HTML 就能看效果，我先把你的真实 JSON 数据硬编码进来
+                // 等你部署到服务器后，把上面两行注释解开，把下面这块删掉即可
+
+
+                // 数据加载成功后，立刻渲染第一题
+               // if (questionsData.length > 0) {
+                   // renderCard(0);
+               // } else {
+                    document.getElementById('q-content').innerHTML = "题库为空！";
+              //  }
+            //} catch (error) {
+              //  console.error("加载题库失败:", error);
+              //  document.getElementById('q-content').innerHTML = "题库加载失败，请检查文件路径或使用本地服务器运行。";
+            //}
+       // }
+
+        // ==========================================
+        // 3. 表现层：渲染卡片内容
+        // ==========================================
+        function renderCard(index) {
+            if (questionsData.length === 0) return; // 防御性编程：如果没有数据，直接退出
+            
+            const data = questionsData[index];
+            const cardElement = document.getElementById('flashcard');
+            
+            // 强制将卡片翻回正面
+            cardElement.classList.remove('flipped');
+            
+            // 延迟 150ms 替换文字，优化视觉体验
+            setTimeout(() => {
+                // --- 渲染正面 ---
+                document.getElementById('q-title').textContent = data.title;
+                // 使用字典转换 type，如果字典里没有，就默认显示原英文
+                document.getElementById('q-type').textContent = typeDict[data.type] || data.type;
+                
+                // 处理正文换行
+                document.getElementById('q-content').innerHTML = data.content.replace(/\n/g, '<br>');
+
+                // --- 渲染背面 ---
+                // 注意这里的层级调用：data 里面的 reference_answer 里面的 content
+                document.getElementById('a-content').textContent = data.reference_answer.content;
+                document.getElementById('a-explanation').textContent = data.reference_answer.explanation;
+
+                // 更新计数器
+                document.getElementById('card-counter').textContent = `${index + 1} / ${questionsData.length}`;
+            }, 150); 
+        }
+
+        // ==========================================
+        // 4. 交互层：翻转与切换控制
+        // ==========================================
+        function toggleFlip() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function prevCard() {
+            if (questionsData.length === 0) return;
+            currentIndex = (currentIndex - 1 + questionsData.length) % questionsData.length;
+            renderCard(currentIndex);
+        }
+
+        function nextCard() {
+            if (questionsData.length === 0) return;
+            currentIndex = (currentIndex + 1) % questionsData.length;
+            renderCard(currentIndex);
+        }
+
+        // ==========================================
+        // 5. 生命周期：页面加载完毕时启动
+        // ==========================================
+        window.onload = () => {
+            // 不再是直接 renderCard(0)，而是先去加载数据！
+            loadQuestions();
+        };
+    </script>
+    <!-- <script>
+        // 模拟你本地 /data/ds_data/questions/ 目录下的 JSON 数据
+        // 在实际项目中，这里会替换为 fetch('chapter_2.json') 的异步请求
+        const questionsData = [
+            {
+                "id": "q021001",
+                "title": "线性表基础概念",
+                "content": "线性表是具有n个（）的有限序列。\nA.数据表\nB.字符\nC.数据元素\nD.数据项\n02．下列几种描述中，（）是一个线性表。\nA.由n个实数组成的集合\nB.由100个字符组成的序列\nC.所有整数组成的序列\nD.邻接表",
+                "difficulty": "integer",
+                "type": "concept",
+                "reference_answer": {
+                    "content": "C",
+                    "explanation": "线性表是由具有相同数据类型的有限数据元素组成的，数据元素是由数据项组成的。"
+                }
+            },
+            // 为了演示切换效果，我临时增加了一道虚拟题
+            {
+                "id": "q021002",
+                "title": "栈的特性",
+                "content": "栈是一种特殊的线性表，其插入和删除操作遵循什么原则？\nA. 先进先出 (FIFO)\nB. 后进先出 (LIFO)\nC. 随机存取\nD. 顺序存取",
+                "difficulty": "easy",
+                "type": "concept",
+                "reference_answer": {
+                    "content": "B",
+                    "explanation": "栈（Stack）限定只能在表的一端进行插入和删除操作，因此具有后进先出（LIFO - Last In First Out）的特性。"
+                }
+            }
+        ];
+
+        let currentIndex = 0; // 记录当前显示到第几题
+
+        // 核心渲染逻辑：将 JSON 数据映射到 HTML DOM 节点上
+        function renderCard(index) {
+            const data = questionsData[index];
+            const cardElement = document.getElementById('flashcard');
+            
+            // 1. 每次切换题目时，强制将卡片翻回正面（移除 flipped 类）
+            cardElement.classList.remove('flipped');
+            
+            // 2. 延迟 200ms 等待翻转动画结束，再替换文字，防止用户看到文字突变
+            setTimeout(() => {
+                // 填充正面
+                document.getElementById('q-title').textContent = data.title;
+                document.getElementById('q-type').textContent = data.type === 'concept' ? '概念题' : '计算题';
+                
+                // 处理 JSON 中的 \n 换行符，将其转换为 HTML 的 <br> 标签
+                // 正则表达式 /\n/g 意思是全局替换所有回车符
+                document.getElementById('q-content').innerHTML = data.content.replace(/\n/g, '<br>');
+
+                // 填充背面
+                document.getElementById('a-content').textContent = data.reference_answer.content;
+                document.getElementById('a-explanation').textContent = data.reference_answer.explanation;
+
+                // 更新底部计数器
+                document.getElementById('card-counter').textContent = `${index + 1} / ${questionsData.length}`;
+            }, 150); // 150ms 的小延迟，是优化视觉体验的秘诀
+        }
+
+        // 翻转动作
+        function toggleFlip() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        // 切换上一题
+        function prevCard() {
+            // 使用取模运算实现循环切换：第一题的前一题是最后一题
+            currentIndex = (currentIndex - 1 + questionsData.length) % questionsData.length;
+            renderCard(currentIndex);
+        }
+
+        // 切换下一题
+        function nextCard() {
+            // 使用取模运算实现循环切换：最后一题的下一题是第一题
+            currentIndex = (currentIndex + 1) % questionsData.length;
+            renderCard(currentIndex);
+        }
+
+        // 页面刚加载完毕时，立刻渲染第 0 个数据
+        window.onload = () => {
+            renderCard(0);
+        };
+    </script> -->
+</body>
+</html>

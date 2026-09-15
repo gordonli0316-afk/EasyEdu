@@ -1,0 +1,78 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Virtual environments
+venv/
+env/
+.env
+.venv/
+
+# Distribution / packaging
+*.egg
+*.egg-info
+dist/
+build/
+
+# PyInstaller
+*.spec
+
+# IDE or text editor settings
+.vscode/
+.idea/
+*.swp
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Python test files
+*.log
+
+#others
+ztmp/*
+scripts/rlhf/lora_model/
+/scripts/rlhf/lora_model/
+lora_model/*
+rola_config/*
+checkpoints/*
+openrlhf_workspace/checkpoints/*
+
+# 大体积教材 PDF（数据来源，勿入库）
+textbooks/**/*.pdf
+
+# 运行时产物
+data/uploads/*
+data/exports/*
+!data/uploads/.gitkeep
+!data/exports/.gitkeep
+
+# AP/IB 题库（在 GPU 机器上由 ingest_textbooks.py 生成）+ 索引缓存
+data/courses/**
+!data/courses/README.md
+data/courses/courses_indices.pkl
+
+# 模型训练产物
+output/
+*.safetensors
+
+# 系统
+.DS_Store
+
+
+
+# Office lock files
+~$*
+
+*.docx
+*.doc
+*.pdf
+*.pptx
+*.ppt
+*.xlsx
+*.xls
+deliverables/
+scripts/docx_helpers.py
+scripts/generate_business_plan_lesson_plan.py
+scripts/generate_defense_bible.py
+
