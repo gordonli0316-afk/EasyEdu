@@ -7,17 +7,21 @@ full solution to a real IB or AP question, an AI *study partner* challenges the 
 steps, and a *tutor* closes the gaps with the underlying principle. It is the Feynman
 technique turned into software — if you cannot explain it, you have not learned it yet.
 
-- **[Try it locally in 30 seconds](#run-it-locally)** — no GPU, no API key, no data setup.
+**Live demo: <https://easyedu-496b.onrender.com>** — open it and press *Try a question now*.
+No account, no API key, nothing to install.
+
+- **[Run it locally in 30 seconds](#run-it-locally)** — no GPU, no API key, no data setup.
 - **[Deploy it as a public website](docs/DEPLOY.md)** — one blueprint, one click on Render.
 
 ---
 
 ## Live demo
 
-> **Public URL: _add your Render URL here once deployed_** — e.g. `https://easyedu.onrender.com`
->
-> Nothing to install, no account, no API key. Open the link, press **Try a question now**,
-> and type an explanation. See [`docs/DEPLOY.md`](docs/DEPLOY.md) to get that URL.
+**<https://easyedu-496b.onrender.com>**
+
+Nothing to install, no account, no API key. Open the link, press **Try a question now**,
+and type an explanation. The service is on Render's free tier, so the first visit after a
+quiet period can take 30–60 seconds to wake up.
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/gordonli0316-afk/EasyEdu)
 

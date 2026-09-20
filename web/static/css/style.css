@@ -1013,3 +1013,32 @@ header h1 {
     line-height: 1.25;
     padding-left: 0.5rem;
 } 
+/* ------------------------------------------------------------------ *
+ * Narrow phones: the fixed navigation used to be wider than the viewport,
+ * which pushed "Flashcards" and the language toggle off-screen where they
+ * could not be tapped. Tighten the bar instead of dropping any destination.
+ * The bar stays 50px tall, so the existing body padding-top still matches.
+ * ------------------------------------------------------------------ */
+@media (max-width: 520px) {
+    .fixed-nav { padding: 0 8px; }
+    .nav-links { min-width: 0; }
+    .nav-item { padding: 0 7px; font-size: 0.83rem; }
+    /* The toggle carries inline styles from the templates, so override them here. */
+    #lang-toggle-btn { margin-left: 6px !important; padding: 4px 8px !important; font-size: 0.78rem !important; }
+}
+
+@media (max-width: 430px) {
+    /* Phone widths cannot fit the wordmark next to four destinations and the
+       language toggle. The brand is still shown prominently in the page
+       content (and the page title), so the nav drops it rather than hiding a
+       destination off-screen. */
+    .nav-logo { display: none; }
+}
+
+@media (max-width: 360px) {
+    /* Very small phones: shrink once more, and let the bar scroll as a last
+       resort so no destination can ever be unreachable. */
+    .nav-item { padding: 0 4px; font-size: 0.76rem; }
+    .nav-links { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+}
