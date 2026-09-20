@@ -21,12 +21,21 @@ clearly. Connect a model later if you want free-form AI answers (see step 4).
 Render runs Python web services with HTTPS and a public `*.onrender.com` domain, and
 this repo already contains a `render.yaml` blueprint, so there is nothing to configure.
 
-1. Push this repository to GitHub.
-2. Create an account at <https://render.com> and connect your GitHub account.
-3. In the dashboard: **New +** → **Blueprint**.
-4. Select the repository. Render reads `render.yaml`, creates the service and starts
-   the first build automatically.
-5. Wait for the build (2–4 minutes). The service page shows your URL, e.g.
+**Fastest path — one click:**
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/gordonli0316-afk/EasyEdu)
+
+Sign in to Render (GitHub login), confirm the blueprint, press **Apply**, and wait for the
+build. Render reads `render.yaml` for the runtime, build command, start command, health
+check path and environment variables — there are no settings to enter.
+
+**Or from the dashboard:**
+
+1. Create an account at <https://render.com> and connect your GitHub account.
+2. **New +** → **Blueprint**.
+3. Select `gordonli0316-afk/EasyEdu`. Render reads `render.yaml`, creates the service and
+   starts the first build automatically.
+4. Wait for the build (2–4 minutes). The service page shows your URL, e.g.
    `https://easyedu.onrender.com`. Open it — that link is what you share.
 
 **Free-plan behaviour you should know:** the instance sleeps after ~15 minutes with no

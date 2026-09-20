@@ -19,6 +19,11 @@ technique turned into software — if you cannot explain it, you have not learne
 > Nothing to install, no account, no API key. Open the link, press **Try a question now**,
 > and type an explanation. See [`docs/DEPLOY.md`](docs/DEPLOY.md) to get that URL.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/gordonli0316-afk/EasyEdu)
+
+One click reads [`render.yaml`](render.yaml) and creates the service with the correct
+runtime, build command, start command, health check and environment. No settings to fill in.
+
 | Landing page | Explain-back in action | Mobile |
 | --- | --- | --- |
 | ![EasyEdu landing page](docs/assets/home.png) | ![A student explanation judged by the tutor, with the reference answer and related knowledge points](docs/assets/explain-back.png) | ![EasyEdu on a phone](docs/assets/mobile.png) |
