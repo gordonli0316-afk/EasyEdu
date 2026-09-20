@@ -4,8 +4,8 @@ import os
 from langchain_core.messages import AIMessage, SystemMessage
 
 from ..base import State
-from ..demo import peer_follow_up
-from ..llm.health import active_mode
+from ..demo import fallback_notice, human_turn_count, last_human_text, peer_follow_up
+from ..llm.health import active_mode, mark_unavailable
 from ..models import get_llm, stream_or_chat
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,56 +19,57 @@ class StudentAgent:
         self.model_type = model_type
 
     async def __call__(self, state: State, config) -> dict:
-        try:
-            curr_question = state.question[0]
-            evaluation = state.evaluation
-            language = getattr(state, "language", "en")
+        curr_question = state.question[0]
+        evaluation = state.evaluation
+        language = getattr(state, "language", "en")
+        answer = last_human_text(state.messages)
 
-            # 演示模式：没有可用模型时用模板化追问兜底
-            if active_mode() == "demo":
-                human_turns = sum(
-                    1 for m in state.messages if getattr(m, "type", "") == "human"
-                )
-                last_human = next(
-                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
-                    None,
-                )
-                content = peer_follow_up(
-                    curr_question,
-                    str(getattr(last_human, "content", "")),
-                    evaluation,
-                    turn=max(human_turns - 1, 0),
-                    language=language,
-                )
-                return {"messages": AIMessage(content=content)}
-
-            prompt_path = os.path.join(PROMPTS_DIR, "student_agent_prompt2.txt")
-            with open(prompt_path, "r", encoding="utf-8") as f:
-                prompt_template = f.read()
-
-            if language == "zh":
-                lang_instruction = "你必须完全用中文回复，用中文提问。"
-            else:
-                lang_instruction = "You must respond entirely in English."
-
-            system_text = prompt_template.format(
-                title=curr_question["title"],
-                content=curr_question["content"],
-                answer=curr_question["reference_answer"]["content"],
-                explanation=curr_question["reference_answer"]["explanation"],
-                is_right=evaluation.get("is_right"),
-                is_complete=evaluation.get("is_complete"),
-                reason=evaluation.get("reason", ""),
-                language_instruction=lang_instruction,
+        def demo_reply(with_notice: bool) -> dict:
+            content = peer_follow_up(
+                curr_question,
+                answer,
+                evaluation,
+                turn=max(human_turn_count(state.messages) - 1, 0),
+                language=language,
             )
-
-            messages = [SystemMessage(content=system_text)]
-            messages.extend(state.messages)
-
-            client = get_llm(model_type=self.model_type)
-            content = await stream_or_chat(client, messages, "student_agent")
-
+            if with_notice:
+                content = fallback_notice(language) + content
             return {"messages": AIMessage(content=content)}
 
-        except Exception as e:
-            return {"log": str(e), "messages": AIMessage(content=f"Sorry, an error occurred: {e}")}
+        # The router may already have discovered that the model is unavailable.
+        if active_mode() != "live":
+            return demo_reply(with_notice=bool(evaluation.get("used_fallback")))
+
+        try:
+            content = await self._ask_model(state, curr_question, evaluation, language)
+            return {"messages": AIMessage(content=content)}
+        except Exception:
+            mark_unavailable("model request failed")
+            return demo_reply(with_notice=True)
+
+    async def _ask_model(self, state: State, curr_question: dict, evaluation: dict, language: str) -> str:
+        prompt_path = os.path.join(PROMPTS_DIR, "student_agent_prompt2.txt")
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            prompt_template = f.read()
+
+        if language == "zh":
+            lang_instruction = "你必须完全用中文回复，用中文提问。"
+        else:
+            lang_instruction = "You must respond entirely in English."
+
+        system_text = prompt_template.format(
+            title=curr_question["title"],
+            content=curr_question["content"],
+            answer=curr_question["reference_answer"]["content"],
+            explanation=curr_question["reference_answer"]["explanation"],
+            is_right=evaluation.get("is_right"),
+            is_complete=evaluation.get("is_complete"),
+            reason=evaluation.get("reason", ""),
+            language_instruction=lang_instruction,
+        )
+
+        messages = [SystemMessage(content=system_text)]
+        messages.extend(state.messages)
+
+        client = get_llm(model_type=self.model_type)
+        return await stream_or_chat(client, messages, "student_agent")

@@ -6,8 +6,8 @@ from langchain_core.messages import AIMessage, SystemMessage
 from langgraph.types import Command
 
 from ..base import State
-from ..demo import tutor_feedback
-from ..llm.health import active_mode
+from ..demo import fallback_notice, last_human_text, tutor_feedback
+from ..llm.health import active_mode, mark_unavailable
 from ..models import get_llm, stream_or_chat
 from data.courses_loader import CoursesDataLoader
 
@@ -60,69 +60,66 @@ class TeacherAgent:
         self.model_type = model_type
 
     async def __call__(self, state: State, config) -> Command[Literal["__end__"]]:
+        curr_question = state.question[0]
+        evaluation = state.evaluation
+        language = getattr(state, "language", "en")
+        answer = last_human_text(state.messages)
+
+        def demo_feedback(with_notice: bool) -> Command:
+            content = tutor_feedback(
+                curr_question,
+                answer,
+                evaluation,
+                loader=_get_loader(),
+                language=language,
+            )
+            if with_notice:
+                content = fallback_notice(language) + content
+            return Command(update={"messages": AIMessage(content=content)}, goto="__end__")
+
+        # The router may already have discovered that the model is unavailable.
+        if active_mode() != "live":
+            return demo_feedback(with_notice=bool(evaluation.get("used_fallback")))
+
         try:
-            curr_question = state.question[0]
-            evaluation = state.evaluation
-            language = getattr(state, "language", "en")
+            content = await self._ask_model(state, curr_question, evaluation, language)
+            return Command(update={"messages": AIMessage(content=content)}, goto="__end__")
+        except Exception:
+            # Provider failure (bad key, no balance, 429, 5xx, timeout) must not break
+            # the lesson: answer from the built-in reference material instead.
+            mark_unavailable("model request failed")
+            return demo_feedback(with_notice=True)
 
-            # 演示模式：没有可用模型时，用参考答案 + 知识点摘要给出教师反馈
-            if active_mode() == "demo":
-                last_human = next(
-                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
-                    None,
-                )
-                content = tutor_feedback(
-                    curr_question,
-                    str(getattr(last_human, "content", "")),
-                    evaluation,
-                    loader=_get_loader(),
-                    language=language,
-                )
-                return Command(
-                    update={"messages": AIMessage(content=content)},
-                    goto="__end__",
-                )
+    async def _ask_model(self, state: State, curr_question: dict, evaluation: dict, language: str) -> str:
+        prompt_path = os.path.join(PROMPTS_DIR, "teacher_agent_prompt.txt")
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            prompt_template = f.read()
 
-            prompt_path = os.path.join(PROMPTS_DIR, "teacher_agent_prompt.txt")
-            with open(prompt_path, "r", encoding="utf-8") as f:
-                prompt_template = f.read()
+        knowledge_points = curr_question.get("knowledge_points", [])
+        knowledge_context = ""
+        if knowledge_points:
+            knowledge_context = await knowledge_summry_search(knowledge_points)
 
-            knowledge_points = curr_question.get("knowledge_points", [])
-            knowledge_context = ""
-            if knowledge_points:
-                knowledge_context = await knowledge_summry_search(knowledge_points)
+        if language == "zh":
+            lang_instruction = "你必须完全用中文回复，包括所有解释、提问和总结。"
+        else:
+            lang_instruction = "You must respond entirely in English."
 
-            if language == "zh":
-                lang_instruction = "你必须完全用中文回复，包括所有解释、提问和总结。"
-            else:
-                lang_instruction = "You must respond entirely in English."
+        system_text = prompt_template.format(
+            title=curr_question["title"],
+            content=curr_question["content"],
+            answer=curr_question["reference_answer"]["content"],
+            knowledge_points=knowledge_points,
+            explanation=curr_question["reference_answer"]["explanation"],
+            is_right=evaluation.get("is_right"),
+            is_complete=evaluation.get("is_complete"),
+            reason=evaluation.get("reason", ""),
+            knowledge_context=knowledge_context or "N/A",
+            language_instruction=lang_instruction,
+        )
 
-            system_text = prompt_template.format(
-                title=curr_question["title"],
-                content=curr_question["content"],
-                answer=curr_question["reference_answer"]["content"],
-                knowledge_points=knowledge_points,
-                explanation=curr_question["reference_answer"]["explanation"],
-                is_right=evaluation.get("is_right"),
-                is_complete=evaluation.get("is_complete"),
-                reason=evaluation.get("reason", ""),
-                knowledge_context=knowledge_context or "N/A",
-                language_instruction=lang_instruction,
-            )
+        messages = [SystemMessage(content=system_text)]
+        messages.extend(state.messages)
 
-            messages = [SystemMessage(content=system_text)]
-            messages.extend(state.messages)
-
-            client = get_llm(model_type=self.model_type)
-            content = await stream_or_chat(client, messages, "teacher_agent")
-
-            return Command(
-                update={"messages": AIMessage(content=content)},
-                goto="__end__",
-            )
-
-        except Exception as e:
-            return Command(
-                update={"log": str(e), "messages": AIMessage(content=f"Sorry, an error occurred: {e}")},
-                goto="__end__",
-            )
+        client = get_llm(model_type=self.model_type)
+        return await stream_or_chat(client, messages, "teacher_agent")

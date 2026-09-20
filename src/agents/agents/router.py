@@ -8,8 +8,8 @@ from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
 from ..base import State
-from ..demo import evaluate_answer
-from ..llm.health import active_mode
+from ..demo import evaluate_answer, last_human_text
+from ..llm.health import active_mode, mark_unavailable
 from ..models import get_llm
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,58 +39,58 @@ class RouterAgent:
     async def __call__(self, state: State, config) -> Command[Literal["teacher_agent", "student_agent"]]:
         try:
             curr_question = state.question[0]
-
-            # 演示模式：没有可用模型时用规则评估兜底，保证网页流程不断
-            if active_mode() == "demo":
-                last_human = next(
-                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
-                    None,
-                )
-                router_result: Evaluation = evaluate_answer(
-                    curr_question, str(getattr(last_human, "content", ""))
-                )
-                goto = "teacher_agent" if router_result["next_agent"] == "teacher" else "student_agent"
-                return Command(update={"evaluation": router_result}, goto=goto)
-
-            prompt_path = os.path.join(PROMPTS_DIR, "router_agent_prompt.txt")
-            with open(prompt_path, "r", encoding="utf-8") as f:
-                system_text = f.read()
-
-            system_text = system_text.format(
-                title=curr_question["title"],
-                content=curr_question["content"],
-                answer=curr_question["reference_answer"]["content"],
-                explanation=curr_question["reference_answer"]["explanation"],
-            )
-
-            messages = [SystemMessage(content=system_text)]
-            messages.extend(state.messages)
-
-            client = get_llm(model_type=self.model_type)
-            # 路由是"对/错/完整性"的结构化判断，用低温度让评估和 JSON 输出更稳定
-            result = await client.chat_json(messages, EvaluationSchema, temperature=0.2)
-
-            router_result: Evaluation = {
-                "is_right": result.is_right,
-                "is_complete": result.is_complete,
-                "reason": result.reason,
-                "next_agent": result.next_agent,
-            }
-
-            goto = "teacher_agent" if router_result["next_agent"] == "teacher" else "student_agent"
-
+        except Exception:
             return Command(
-                update={"evaluation": router_result},
-                goto=goto,
-            )
-
-        except Exception as e:
-            return Command(
-                update={"log": str(e), "evaluation": {
-                    "is_right": False,
-                    "is_complete": False,
-                    "reason": f"Router error: {e}",
+                update={"evaluation": {
+                    "is_right": False, "is_complete": False,
+                    "reason": "No question is loaded for this session.",
                     "next_agent": "teacher",
                 }},
                 goto="teacher_agent",
             )
+
+        # 优先走真实模型；不可用时退回规则评估，保证网页流程不断
+        live_failed = False
+        if active_mode() == "live":
+            try:
+                return await self._route_with_model(state, curr_question)
+            except Exception:
+                # Never surface provider details; demote so the next request is fast.
+                mark_unavailable("model request failed")
+                live_failed = True
+
+        router_result: Evaluation = evaluate_answer(curr_question, last_human_text(state.messages))
+        if live_failed:
+            # Carry the fact downstream: the node that writes the reply must say that
+            # it came from the built-in reference answers, not from the model.
+            router_result["used_fallback"] = True
+        goto = "teacher_agent" if router_result["next_agent"] == "teacher" else "student_agent"
+        return Command(update={"evaluation": router_result}, goto=goto)
+
+    async def _route_with_model(self, state: State, curr_question: dict) -> Command:
+        prompt_path = os.path.join(PROMPTS_DIR, "router_agent_prompt.txt")
+        with open(prompt_path, "r", encoding="utf-8") as f:
+            system_text = f.read()
+
+        system_text = system_text.format(
+            title=curr_question["title"],
+            content=curr_question["content"],
+            answer=curr_question["reference_answer"]["content"],
+            explanation=curr_question["reference_answer"]["explanation"],
+        )
+
+        messages = [SystemMessage(content=system_text)]
+        messages.extend(state.messages)
+
+        client = get_llm(model_type=self.model_type)
+        # 路由是"对/错/完整性"的结构化判断，用低温度让评估和 JSON 输出更稳定
+        result = await client.chat_json(messages, EvaluationSchema, temperature=0.2)
+
+        router_result: Evaluation = {
+            "is_right": result.is_right,
+            "is_complete": result.is_complete,
+            "reason": result.reason,
+            "next_agent": result.next_agent,
+        }
+        goto = "teacher_agent" if router_result["next_agent"] == "teacher" else "student_agent"
+        return Command(update={"evaluation": router_result}, goto=goto)

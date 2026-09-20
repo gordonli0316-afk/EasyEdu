@@ -19,9 +19,15 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.9"
-      # "demo" needs no API key and keeps the site fully usable for reviewers.
-      # Switch to deepseek/tongyi and add the matching key to use a real model.
-      - key: EASYEDU_LLM_BACKEND
-        value: demo
-      # - key: DEEPSEEK_API_KEY
-      #   sync: false
+      # DeepSeek is used automatically as soon as this key exists, with no other
+      # setting required (EasyEdu resolves the backend from the environment).
+      # `sync: false` means the value is entered in the Render dashboard and is
+      # never read from, or written to, this repository.
+      #
+      # Leave it empty and the site still works: EasyEdu detects that no model is
+      # reachable and serves answers from the bundled reference material instead.
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      # Optional: pin a specific model. Defaults to deepseek-chat.
+      # - key: DEEPSEEK_MODEL
+      #   value: deepseek-chat

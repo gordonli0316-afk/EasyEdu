@@ -96,20 +96,43 @@ curl https://<your-url>/api/status     # mode, question-bank source and counts
 ## 4. Connecting a real model (optional)
 
 All model traffic goes through the backend; **no API key is ever sent to the
-browser**. Set these in the host's environment-variable panel (never in git):
+browser**. DeepSeek support is already built in — you only need to supply the key.
 
-| Variable | Value |
-| --- | --- |
-| `EASYEDU_LLM_BACKEND` | `deepseek` or `tongyi` |
-| `DEEPSEEK_API_KEY` | your key (when using `deepseek`) |
-| `TONGYI_API_KEY` | your key (when using `tongyi`) |
+**On Render:** the blueprint declares the variable, so you just fill in the value.
+
+1. Open your service → **Environment** (Render also prompts for it during Blueprint
+   creation if you leave it blank there).
+2. Find **`DEEPSEEK_API_KEY`** — already declared by `render.yaml` with `sync: false`,
+   so its value is never read from or written to this repository.
+3. Paste your key → **Save Changes**. Render redeploys automatically.
+
+That is the only step. `EASYEDU_LLM_BACKEND` does **not** need to be set: EasyEdu
+resolves the backend from the environment (see the table below).
+
+| Variable | Value | Required |
+| --- | --- | --- |
+| `DEEPSEEK_API_KEY` | your DeepSeek key | yes, for live answers |
+| `DEEPSEEK_MODEL` | defaults to `deepseek-chat` | no |
+| `EASYEDU_LLM_BACKEND` | override; normally leave unset | no |
+| `TONGYI_API_KEY` | only if you prefer Tongyi/DashScope | no |
+
+Resolution order when `EASYEDU_LLM_BACKEND` is unset:
+
+1. `deepseek` if `DEEPSEEK_API_KEY` is set
+2. `tongyi` if `TONGYI_API_KEY` is set
+3. `local_vllm` otherwise
 
 Notes:
 
 - The key stays server-side; the frontend only ever talks to `/api/...` on the same origin.
-- `EASYEDU_LLM_BACKEND=demo` forces demo mode; leaving it unset makes the app probe
-  the configured endpoint once at startup and fall back to demo mode automatically if
-  nothing answers, so the site never breaks for a visitor.
+- EasyEdu probes the chosen endpoint once. If it is unreachable, rejects the key, has no
+  balance, rate-limits us, or errors mid-request, EasyEdu **automatically** answers from
+  its bundled reference material instead. A visitor never sees a provider error, and a
+  fallback reply says plainly that it did not come from the model.
+- After a runtime failure the process stays in demo mode so the next visitor is not made
+  to wait on a provider that is already known to be failing.
+- `GET /api/status` reports `mode`, a non-technical `mode_reason`, and `model_backend`,
+  so you can confirm from outside which engine is serving.
 - To serve your own fine-tuned model, run it behind an OpenAI-compatible endpoint
   (vLLM) and set `EASYEDU_LLM_BACKEND=local_vllm` plus `EASYEDU_LLM_BASE_URL`.
 
@@ -119,6 +142,6 @@ Notes:
 | --- | --- |
 | First page load takes ~1 minute | Free instance was asleep. Expected; see the note above. |
 | Pages load but there are no questions | `data/courses/` and `data/seed_courses/` are both missing or empty. Check `/api/status` → `counts.questions`. |
-| `/api/status` shows `mode: live` but answers error | The model endpoint rejected the key (wrong key, no credit, wrong base URL). Set `EASYEDU_LLM_BACKEND=demo` to recover instantly. |
+| Answers look like reference explanations, not model prose | Check `/api/status` → `mode` and `mode_reason`. The site is in demo mode because the model is unreachable or the key was rejected; fix the key in the host's environment panel. The site stays fully usable either way. |
 | Build fails installing dependencies | The host is using an old Python. `render.yaml` pins 3.11.9; other hosts need Python 3.10+. |
 | Answers reset between requests | Expected: sessions are in-memory and single-worker, and free hosts restart containers. |

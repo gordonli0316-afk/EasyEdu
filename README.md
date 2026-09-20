@@ -55,7 +55,8 @@ bash run_web.sh                     # http://127.0.0.1:8000
 
 Open <http://127.0.0.1:8000>. There is nothing else to configure.
 
-**It works with no model attached.** If no model endpoint is reachable, EasyEdu runs in
+**It works with no model attached.** If no model endpoint is reachable — or the key is
+rejected, out of credit, rate-limited or the provider fails mid-request — EasyEdu runs in
 **demo mode**: replies are assembled from the bundled textbook reference answers with a
 rule-based evaluator, and the three-agent flow behaves exactly as it does with a model —
 the site never breaks for a visitor. The interface states plainly which mode is active,
@@ -85,8 +86,8 @@ Everything is read from environment variables; `.env.example` documents them all
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
-| `EASYEDU_LLM_BACKEND` | `demo`, `local_vllm`, `deepseek`, `tongyi` | auto-detect, falls back to `demo` |
-| `DEEPSEEK_API_KEY` / `TONGYI_API_KEY` | server-side API key for that backend | – |
+| `EASYEDU_LLM_BACKEND` | override the engine: `demo`, `local_vllm`, `deepseek`, `tongyi` | unset — auto-detected, and falls back to `demo` whenever the model is unusable |
+| `DEEPSEEK_API_KEY` / `TONGYI_API_KEY` | server-side API key; setting one selects that backend automatically | – |
 | `EASYEDU_LLM_BASE_URL` / `EASYEDU_LLM_MODEL` | self-hosted OpenAI-compatible endpoint | `http://127.0.0.1:8000/v1`, `Qwen2.5-7B-Instruct` |
 | `PORT` / `EASYEDU_WEB_PORT` | HTTP port | `8000` |
 | `EASYEDU_CORS_ORIGINS` | only if the frontend is on another domain | same-origin, no CORS |

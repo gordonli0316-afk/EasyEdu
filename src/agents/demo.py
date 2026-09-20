@@ -204,3 +204,26 @@ def tutor_feedback(
         "Anywhere you stall is the part that is not yet secure.",
     ]
     return "\n".join(parts)
+
+def human_turn_count(messages) -> int:
+    """How many times the student has written something in this session."""
+    return sum(1 for m in (messages or []) if getattr(m, "type", "") == "human")
+
+
+def last_human_text(messages) -> str:
+    """Text of the most recent human turn (empty string when there is none)."""
+    for message in reversed(list(messages or [])):
+        if getattr(message, "type", "") == "human":
+            return str(getattr(message, "content", ""))
+    return ""
+
+
+def fallback_notice(language: str = "en") -> str:
+    """One honest line shown only when a live model call failed mid-conversation.
+
+    Demo mode that was known from the start is announced once by the page banner, so
+    this is purely to avoid implying that a reference-based reply came from the model.
+    """
+    if language == "zh":
+        return "_AI 模型暂时不可用，下面的反馈来自 EasyEdu 内置的参考答案。_\n\n"
+    return "_The AI model is unavailable right now, so this reply comes from EasyEdu's built-in reference answers._\n\n"

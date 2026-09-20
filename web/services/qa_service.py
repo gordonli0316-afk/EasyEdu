@@ -4,7 +4,7 @@ from typing import Optional
 
 from src.knowledge_qa_system import KnowledgeQASystem
 from src.agents.llm.env import get_default_model_backend
-from src.agents.llm.health import active_mode
+from src.agents.llm.health import active_mode, mode_reason
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +48,11 @@ class QAService:
         return active_mode()
 
     @property
+    def mode_reason(self) -> str:
+        """Short, non-technical reason for the current mode (never contains secrets)."""
+        return mode_reason()
+
+    @property
     def source(self) -> str:
         """Which question bank is loaded: "generated" or "sample"."""
         root = str(getattr(self.qa_system.index_system, "source_dir", "") or "")
@@ -74,8 +79,9 @@ class QAService:
             async for chunk, node in self.qa_system.process_answer(session_id, answer):
                 yield chunk, node
         except Exception as e:
-            logger.error(f"process_answer error: {e}")
-            yield f"讨论中断，请稍后重试: {str(e)}", "system"
+            # Log the detail server-side only; the visitor gets a plain message.
+            logger.exception("process_answer failed: %s", type(e).__name__)
+            yield "Something went wrong while reviewing your answer. Please send it again.", "system"
 
     def get_session_info(self, session_id):
         return self.qa_system.get_session_info(session_id)

@@ -3,6 +3,8 @@ import os
 from dataclasses import dataclass
 from dotenv import load_dotenv
 
+from .env import get_default_model_backend
+
 load_dotenv()
 
 
@@ -24,13 +26,13 @@ def get_llm_config(model_type: str | None = None) -> LLMConfig:
     Default backend: local_vllm (self-hosted OpenAI-compatible server).
     Fallback aliases: deepseek, tongyi, qwen2.5 (dev only).
     """
-    backend = model_type or os.getenv("EASYEDU_LLM_BACKEND", "local_vllm")
+    backend = model_type or get_default_model_backend()
 
     defaults = {
         "temperature": float(os.getenv("EASYEDU_LLM_TEMPERATURE", "0.7")),
         "max_tokens": int(os.getenv("EASYEDU_LLM_MAX_TOKENS", "4096")),
-        "timeout": float(os.getenv("EASYEDU_LLM_TIMEOUT", "120")),
-        "max_retries": int(os.getenv("EASYEDU_LLM_MAX_RETRIES", "2")),
+        "timeout": float(os.getenv("EASYEDU_LLM_TIMEOUT", "60")),
+        "max_retries": int(os.getenv("EASYEDU_LLM_MAX_RETRIES", "1")),
     }
 
     if backend == "local_vllm":
@@ -44,7 +46,9 @@ def get_llm_config(model_type: str | None = None) -> LLMConfig:
     if backend == "deepseek":
         return LLMConfig(
             backend="deepseek",
-            base_url="https://api.deepseek.com/v1",
+            # Overridable for a self-hosted or proxied OpenAI-compatible endpoint,
+            # mirroring TONGYI_API_BASE below.
+            base_url=os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com/v1"),
             api_key=os.getenv("DEEPSEEK_API_KEY", ""),
             model=os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
             **defaults,

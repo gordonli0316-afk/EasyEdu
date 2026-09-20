@@ -16,6 +16,7 @@ from web.api.endpoints import (
     chapters, questions, sessions, knowledge, upload,
     tags, videos, flashcards, questions_extended
 )
+from src.agents.llm.config import get_llm_config
 from web.services.qa_service import get_qa_service
 
 # 用绝对路径，这样从任何工作目录启动都能找到静态文件和模板
@@ -54,6 +55,14 @@ app.include_router(flashcards.router, prefix="/api", tags=["flashcards"])
 app.include_router(questions_extended.router, prefix="/api", tags=["questions_extended"])
 
 
+def _public_backend() -> str:
+    """Backend name only — never a key, URL credential or model secret."""
+    try:
+        return get_llm_config().backend
+    except Exception:
+        return "unknown"
+
+
 @app.get("/healthz", include_in_schema=False)
 async def healthz():
     """Liveness probe for the hosting platform (must stay cheap)."""
@@ -73,6 +82,10 @@ async def api_status():
     return {
         "status": "ok",
         "mode": service.mode,
+        # Non-technical and secret-free: lets an operator confirm from outside which
+        # provider is in use and why the app is (or is not) in demo mode.
+        "mode_reason": service.mode_reason,
+        "model_backend": _public_backend(),
         "question_source": service.source,
         "subjects": loader.subjects,
         "counts": {
