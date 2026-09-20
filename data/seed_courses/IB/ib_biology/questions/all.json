@@ -1,0 +1,77 @@
+[
+  {
+    "id": "ib_bio_ch01_q1",
+    "title": "Comparing prokaryotic and eukaryotic cells",
+    "content": "The table below summarises features observed in two unidentified cells under an electron microscope.\n\n| Feature | Cell A | Cell B |\n| --- | --- | --- |\n| Diameter | 1.2 \u00b5m | 22 \u00b5m |\n| Nucleus | absent | present |\n| Ribosomes | present, 70S | present, 80S |\n| Mitochondria | absent | present |\n| Circular DNA | present | absent |\n| Cell wall | present (peptidoglycan) | absent |\n\n(a) Identify cell A and cell B, justifying each answer with two pieces of evidence.\n(b) Explain one advantage of compartmentalisation in cell B.",
+    "type": "application",
+    "difficulty": 3,
+    "chapter": "ch01",
+    "subject": "ib_biology",
+    "course": "IB",
+    "knowledge_points": ["ib_bio_ch01_kp1"],
+    "reference_answer": {
+      "content": "(a) Cell A is a prokaryote: it has no nucleus or mitochondria, has 70S ribosomes and circular DNA, and its wall contains peptidoglycan - all typical of bacteria. Cell B is a eukaryote: it has a true nucleus, 80S ribosomes and membrane-bound mitochondria, and is large enough for organelles to be compartmentalised.\n(b) Compartmentalisation keeps incompatible reactions (for example protein synthesis and lysosomal digestion) separate, and concentrating enzymes inside organelles increases the efficiency and rate of reactions.",
+      "explanation": "The strongest answers cite structural evidence rather than size alone. The combination of circular DNA plus 70S ribosomes plus the absence of a nucleus is definitive for a prokaryote, while a nucleus plus 80S ribosomes is definitive for a eukaryote. Peptidoglycan in the wall is a specific prokaryotic marker; note that not all prokaryotes have peptidoglycan (archaea do not), which is why more than one feature is needed. For part (b), the conceptual point is that membranes create distinct chemical environments, allowing conflicting conditions such as the low pH of a lysosome to coexist with the neutral cytosol."
+    }
+  },
+  {
+    "id": "ib_bio_ch01_q2",
+    "title": "Explaining selective permeability",
+    "content": "A student writes: \"The cell membrane is a barrier, so nothing can pass through it unless the cell uses ATP.\"\n\n(a) Identify two errors in that statement.\n(b) Using the fluid mosaic model, explain why oxygen and carbon dioxide cross the membrane easily while sodium ions and glucose do not.\n(c) Describe how a cell takes in a large particle such as a bacterium.",
+    "type": "concept",
+    "difficulty": 3,
+    "chapter": "ch01",
+    "subject": "ib_biology",
+    "course": "IB",
+    "knowledge_points": ["ib_bio_ch01_kp2", "ib_bio_ch01_kp3"],
+    "reference_answer": {
+      "content": "(a) First, the membrane is selectively (partially) permeable rather than an absolute barrier. Second, much transport is passive and needs no ATP - only active transport and endocytosis require ATP.\n(b) O2 and CO2 are small and non-polar, so they dissolve in the hydrophobic fatty acid tail region and diffuse down their concentration gradients. Na+ is charged and glucose is large and polar, so both are repelled by the hydrophobic interior and must pass through specific channel or carrier proteins; Na+ movement against its gradient additionally requires a pump and ATP.\n(c) By endocytosis: the membrane invaginates around the bacterium and pinches off to form a vesicle inside the cell, using ATP and requiring the membrane to be fluid.",
+      "explanation": "The core idea is that the hydrophobic interior of the bilayer is the permeability filter: small non-polar molecules bypass it by dissolving in it, while charged and large polar molecules need a hydrophilic protein route. It is worth noting that facilitated diffusion uses proteins but is still passive, so the presence of a transport protein does not imply ATP use - this is the distinction many students miss. Endocytosis depends on membrane fluidity and on ATP, and it demonstrates that the membrane is dynamic rather than a rigid wall."
+    }
+  },
+  {
+    "id": "ib_bio_ch01_q3",
+    "title": "Predicting the effect of salt on plant tissue",
+    "content": "A student places equal strips of potato tissue into five beakers containing sucrose solutions of different concentrations, leaves them for 30 minutes, then measures the mass of each strip.\n\n| Sucrose concentration (mol dm\u207b\u00b3) | Change in mass (%) |\n| --- | --- |\n| 0.0 | +8.5 |\n| 0.2 | +4.1 |\n| 0.4 | 0.0 |\n| 0.6 | -5.2 |\n| 0.8 | -11.4 |\n\n(a) Explain the trend in the data using the concept of water potential.\n(b) Estimate the solute concentration inside the potato cells at the start, justifying your estimate.\n(c) Predict what would be observed if the potato strips were boiled before the experiment, and explain why.",
+    "type": "application",
+    "difficulty": 4,
+    "chapter": "ch01",
+    "subject": "ib_biology",
+    "course": "IB",
+    "knowledge_points": ["ib_bio_ch01_kp3", "ib_bio_ch01_kp2"],
+    "reference_answer": {
+      "content": "(a) In the 0.0 and 0.2 mol dm^-3 solutions the external solution has a higher water potential than the cytoplasm, so water enters by osmosis and the mass increases. At 0.4 mol dm^-3 there is no net water movement. Above 0.4 mol dm^-3 the external water potential is lower, so water leaves the cells by osmosis and the mass decreases.\n(b) Approximately 0.4 mol dm^-3, because that is the point of zero change in mass, so the external and internal water potentials are equal.\n(c) Boiling denatures the membrane proteins and kills the cells, so the cell membranes lose selective permeability; water movement is no longer regulated by osmosis across an intact membrane and the strips would show much smaller or inconsistent changes (and plasmolysis could not be reversed).",
+      "explanation": "Osmosis is the movement of water from higher to lower water potential across a partially permeable membrane, and the zero-change point identifies where the internal and external water potentials are equal. Change in mass is used as a proxy for water movement; a common error is to talk about sucrose moving into the potato, when in fact sucrose is largely excluded and it is water that moves. Boiling destroys the semipermeability of the membranes, so the tissue no longer behaves as an osmometer - the key idea is that osmosis requires an intact, selectively permeable membrane, not just a concentration difference."
+    }
+  },
+  {
+    "id": "ib_bio_ch02_q1",
+    "title": "Explaining enzyme specificity",
+    "content": "(a) Explain why most enzymes are specific to a single substrate, using the terms active site, tertiary structure and complementary shape.\n(b) Describe what happens to the rate of reaction when the enzyme is heated well above its optimum temperature, and explain the molecular reason.\n(c) State two differences between competitive and non-competitive inhibition, including the effect of increasing substrate concentration.",
+    "type": "concept",
+    "difficulty": 3,
+    "chapter": "ch02",
+    "subject": "ib_biology",
+    "course": "IB",
+    "knowledge_points": ["ib_bio_ch02_kp1", "ib_bio_ch02_kp2"],
+    "reference_answer": {
+      "content": "(a) The active site is a small region formed by the folding of the polypeptide chain into a specific tertiary structure. Its shape and charge distribution are complementary to one substrate, so only that substrate can bind and form an enzyme-substrate complex.\n(b) The rate falls sharply and eventually reaches zero. The extra kinetic energy breaks the hydrogen and ionic bonds that maintain the tertiary structure, so the active site changes shape and the enzyme is denatured.\n(c) A competitive inhibitor binds to the active site, so increasing substrate concentration reduces its effect; a non-competitive inhibitor binds elsewhere on the enzyme and changes the shape of the active site, so increasing substrate concentration does not overcome the inhibition.",
+      "explanation": "Specificity follows from structure: because the active site shape is determined by the tertiary structure, anything that disrupts that structure destroys function. Denaturation is not the same as 'the enzyme dies' - it is a loss of shape, and it is usually irreversible, unlike the temporary slowing caused by low temperature. A strong answer to (c) also notes that the maximum rate is unchanged by a competitive inhibitor but is lowered by a non-competitive inhibitor, which is exactly what distinguishes the two on a rate-versus-substrate graph."
+    }
+  },
+  {
+    "id": "ib_bio_ch02_q2",
+    "title": "Interpreting an enzyme rate experiment",
+    "content": "An enzyme was mixed with its substrate and the volume of product formed was measured every 30 seconds. The experiment was repeated at four temperatures. The initial rates were:\n\n| Temperature (\u00b0C) | Initial rate (cm\u00b3 min\u207b\u00b9) |\n| --- | --- |\n| 10 | 4 |\n| 20 | 9 |\n| 40 | 21 |\n| 60 | 12 |\n| 80 | 0 |\n\n(a) Describe the effect of temperature on the initial rate of reaction.\n(b) Explain the rise between 10 \u00b0C and 40 \u00b0C.\n(c) Explain the fall between 40 \u00b0C and 80 \u00b0C.\n(d) Suggest one improvement to the method and explain how it would improve the reliability of the conclusions.",
+    "type": "application",
+    "difficulty": 4,
+    "chapter": "ch02",
+    "subject": "ib_biology",
+    "course": "IB",
+    "knowledge_points": ["ib_bio_ch02_kp2", "ib_bio_ch02_kp1"],
+    "reference_answer": {
+      "content": "(a) The rate rises from 4 to a maximum of 21 cm^3 min^-1 between 10 C and 40 C, then falls to zero by 80 C, so the optimum is near 40 C.\n(b) Higher temperature gives molecules more kinetic energy, so enzyme and substrate collide more frequently and with more energy, increasing the rate of enzyme-substrate complex formation.\n(c) Above 40 C the hydrogen and ionic bonds holding the tertiary structure break, so the active site is no longer complementary to the substrate and the enzyme denatures; by 80 C all enzyme molecules are denatured.\n(d) Repeat each temperature at least three times and calculate a mean (or control pH and substrate concentration). This reduces the effect of random error so the trend is more reliable and any anomalies can be identified.",
+      "explanation": "The shape of the curve is the classic enzyme-temperature relationship and the answer must distinguish the two mechanisms: a reversible increase in collision frequency below the optimum, and an irreversible loss of tertiary structure above it. A precise answer avoids saying the enzyme is 'killed' (that applies to cells) or that it 'melts'. Part (d) is a control-of-variables point: pH, substrate concentration and enzyme concentration must be held constant because each independently changes the rate, and repeating trials addresses random rather than systematic error."
+    }
+  }
+]

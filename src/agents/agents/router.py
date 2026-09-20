@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
 from ..base import State
+from ..demo import evaluate_answer
+from ..llm.health import active_mode
 from ..models import get_llm
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,6 +39,19 @@ class RouterAgent:
     async def __call__(self, state: State, config) -> Command[Literal["teacher_agent", "student_agent"]]:
         try:
             curr_question = state.question[0]
+
+            # 演示模式：没有可用模型时用规则评估兜底，保证网页流程不断
+            if active_mode() == "demo":
+                last_human = next(
+                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
+                    None,
+                )
+                router_result: Evaluation = evaluate_answer(
+                    curr_question, str(getattr(last_human, "content", ""))
+                )
+                goto = "teacher_agent" if router_result["next_agent"] == "teacher" else "student_agent"
+                return Command(update={"evaluation": router_result}, goto=goto)
+
             prompt_path = os.path.join(PROMPTS_DIR, "router_agent_prompt.txt")
             with open(prompt_path, "r", encoding="utf-8") as f:
                 system_text = f.read()

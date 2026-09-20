@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyEdu - 知识点速记</title>
+    <title>EasyEdu — Knowledge</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/knowledge.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -18,8 +18,7 @@
             <a href="/" class="nav-item" data-i18n="nav_home">Home</a>
             <a href="/problems" class="nav-item" data-i18n="nav_practice">Practice</a>
             <a href="/knowledge" class="nav-item active" data-i18n="nav_knowledge">Knowledge</a>
-            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Upload</span>
-            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Flashcards</span>
+            <a href="/flashcards" class="nav-item" data-i18n="nav_flash">Flashcards</a>
             <button id="lang-toggle-btn" onclick="toggleLang()" style="margin-left:12px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:0.85rem;font-weight:600;color:#374151;">中文</button>
         </div>
     </nav>
@@ -28,14 +27,14 @@
             <!-- 左侧面板: 包含章节列表和知识点列表 -->
             <div class="sidebar-panel">
                 <div class="chapter-section">
-                    <h2>章节列表</h2>
+                    <h2 data-i18n="kp_chapters">Chapters</h2>
                     <ul id="chapter-list" class="list-panel"></ul>
                 </div>
                 
                 <div class="knowledge-list-section">
-                    <h2>知识点列表 <span id="current-chapter-title"></span></h2>
+                    <h2><span data-i18n="kp_list">Knowledge points</span> <span id="current-chapter-title"></span></h2>
                     <div id="knowledge-list" class="list-panel">
-                        <p class="empty-tip">请选择章节查看知识点</p>
+                        <p class="empty-tip" data-i18n="kp_pick_chapter">Choose a chapter to see its knowledge points</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +44,7 @@
                 <div id="knowledge-detail" class="knowledge-detail-card" style="display: none;">
                     <div class="knowledge-detail-header">
                         <div class="knowledge-detail-title">
-                            <h2>知识点详情</h2>
+                            <h2 data-i18n="kp_detail">Knowledge point detail</h2>
                             <h3 id="knowledge-title"></h3>
                         </div>
                     </div>
@@ -57,7 +56,7 @@
                 <div id="empty-detail-placeholder" class="empty-detail-placeholder">
                     <div class="placeholder-content">
                         <i class="fas fa-book-open placeholder-icon"></i>
-                        <p>请从左侧选择知识点查看详情</p>
+                        <p data-i18n="kp_pick">Choose a knowledge point on the left to read its explanation</p>
                     </div>
                 </div>
             </div>

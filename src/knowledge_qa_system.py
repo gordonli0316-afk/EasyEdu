@@ -37,17 +37,11 @@ class KnowledgeQASystem:
         # 这两个标志已废弃，保留参数只为兼容旧调用。题库统一走 data/courses。
         self.use_high_school_data = True
 
-        # 加载 AP/IB 题库：有缓存用缓存，否则现读现存
+        # 加载 AP/IB 题库：有可用缓存就用缓存，否则现读现存
+        self.index_system = None
         if os.path.exists(COURSES_INDICES_PATH):
-            try:
-                self.index_system = CoursesDataLoader.load_indices(COURSES_INDICES_PATH)
-                print("✅ 已加载 AP/IB 题库")
-            except Exception as e:
-                print(f"⚠️  加载题库缓存失败: {e}，重新读取 data/courses ...")
-                self.index_system = CoursesDataLoader()
-                self.index_system.load_all_subjects()
-                self.index_system.save_indices(COURSES_INDICES_PATH)
-        else:
+            self.index_system = CoursesDataLoader.load_indices(COURSES_INDICES_PATH)
+        if self.index_system is None:
             self.index_system = CoursesDataLoader()
             self.index_system.load_all_subjects()
             try:
@@ -94,20 +88,29 @@ class KnowledgeQASystem:
         """
         chapters_knowledge_points = {}
         for chapter_id, chapter_info in self.index_system.chapter_index.items():
-            chapters_knowledge_points[chapter_id] = chapter_info['knowledge_points']
+            # 用 .get：题库里缺 knowledge_points 字段时不应该让整个接口 500
+            chapters_knowledge_points[chapter_id] = chapter_info.get('knowledge_points', [])
         return chapters_knowledge_points
     
-    def knowledge_points_summary_by_knowledge_id(self, knowledge_id: str) -> str:
+    def knowledge_points_summary_by_knowledge_id(self, knowledge_id: str) -> Optional[str]:
         """
         获取指定知识点对应的总结
+
+        知识点不存在时返回 None（而不是抛 TypeError），这样接口层可以正常返回 404。
         """
-        return self.index_system.get_knowledge_point(knowledge_id)['summry']
+        kp = self.index_system.get_knowledge_point(knowledge_id)
+        if not kp:
+            return None
+        return kp.get('summry', '')
     
-    def get_knowledge_name_by_knowledge_id(self, knowledge_id: str) -> str:
+    def get_knowledge_name_by_knowledge_id(self, knowledge_id: str) -> Optional[str]:
         """
-        获取指定知识点对应的名称
+        获取指定知识点对应的名称（不存在时返回 None）
         """
-        return self.index_system.get_knowledge_point(knowledge_id)['title']
+        kp = self.index_system.get_knowledge_point(knowledge_id)
+        if not kp:
+            return None
+        return kp.get('title', '')
     
     def get_questions_by_chapter(self, chapter_id: str) -> List[Dict]:
         """
@@ -283,7 +286,23 @@ class KnowledgeQASystem:
                     
                     if len(similar_questions) >= limit:
                         return similar_questions
-        
+
+        # 兜底：某个知识点只被这一道题用到时，上面会一无所获。
+        # 这时退回到同章节的其他题目，保证「相似问题」面板不会空着。
+        if not similar_questions:
+            chapter_id = question.get("chapter")
+            for q in self.index_system.get_questions_by_chapter(chapter_id) if chapter_id else []:
+                q_id = q["id"]
+                if q_id not in seen_ids:
+                    similar_questions.append({
+                        "id": q_id,
+                        "title": q["title"],
+                        "type": q.get("type", "选择题")
+                    })
+                    seen_ids.add(q_id)
+                    if len(similar_questions) >= limit:
+                        break
+
         return similar_questions
     
     def delete_session(self, session_id: str) -> bool:

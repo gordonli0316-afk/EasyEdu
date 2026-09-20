@@ -1,9 +1,26 @@
 document.addEventListener('DOMContentLoaded', function() {
     let sessionId = null;
 
-    marked.use({ breaks: true });
+    setupMarked({ breaks: true });
 
     initPage();
+    showModeBanner();
+
+    // 明确告诉访客回复来自真实模型还是内置演示逻辑，避免误解
+    async function showModeBanner() {
+        try {
+            const res = await fetch('/api/status');
+            if (!res.ok) return;
+            const data = await res.json();
+            const banner = document.getElementById('mode-banner');
+            if (banner && data.mode === 'demo') {
+                banner.textContent = t('demo_banner');
+                banner.style.display = 'block';
+            }
+        } catch (err) {
+            console.error('mode banner failed:', err);
+        }
+    }
 
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('back-btn').addEventListener('click', () => {
@@ -289,11 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 contentDiv.innerHTML = html;
                 contentDiv.classList.add('expanded');
-                if (window.MathJax && MathJax.typesetPromise) {
-                    MathJax.typesetPromise([contentDiv]).catch(() => {});
-                }
+                typesetMath([contentDiv]);
             } else {
-                contentDiv.innerHTML = marked.parse(content);
+                contentDiv.innerHTML = mdToHtml(content);
                 const expandButton = messageElement.querySelector('.expand-button');
                 setTimeout(() => {
                     const contentHeight = contentDiv.scrollHeight;
@@ -339,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         const temp = document.createElement('div');
         temp.textContent = message;
-        messageDiv.querySelector('.message-text').innerHTML = marked.parse(temp.textContent);
+        messageDiv.querySelector('.message-text').innerHTML = mdToHtml(temp.textContent);
         container.appendChild(messageDiv);
         scrollToBottom();
     }
@@ -384,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .replace(/\n\t/g, '\n<span class="indent"></span>')
                 .replace(/\n\n\n/g, '\n<br><br>\n')
                 .replace(/\n\n/g, '\n<br>\n');
-            return marked.parse(processedText);
+            return mdToHtml(processedText);
         };
 
         let stem = questionData.content || '';
@@ -439,9 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        if (window.MathJax) {
-            try { MathJax.typesetPromise([detailDiv]).catch(() => {}); } catch (e) {}
-        }
+        typesetMath([detailDiv]);
         const codeBlocks = detailDiv.querySelectorAll('pre code');
         if (window.hljs && codeBlocks.length > 0) {
             try { codeBlocks.forEach(block => hljs.highlightElement(block)); } catch (e) {}
@@ -487,7 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     try {
                         const response = await fetch(`/api/knowledge/${kp.id}`);
                         if (response.ok) {
-                            popup.innerHTML = marked.parse(await response.json());
+                            popup.innerHTML = mdToHtml(await response.json());
                         } else {
                             popup.textContent = t('kp_fail');
                         }

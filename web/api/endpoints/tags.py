@@ -11,10 +11,10 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from src.knowledge_qa_system import KnowledgeQASystem
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 
 @router.get("/tags", tags=["tags"])
@@ -90,17 +90,6 @@ async def remove_tag_from_question(question_id: str, tag: str):
             raise HTTPException(status_code=404, detail=f"题目或标签未找到")
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/subjects", tags=["tags"])
-async def get_all_subjects():
-    """获取所有科目列表"""
-    try:
-        qa_system = qa_service.get_qa_system()
-        subjects = qa_system.get_all_subjects()
-        return {"subjects": subjects, "count": len(subjects)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

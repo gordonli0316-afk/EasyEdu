@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ib_cs_ch01_kp1",
+    "title": "Binary and Hexadecimal Representation",
+    "summry": "Computers store data in binary because two stable states are easy to represent electronically. An n-bit pattern has 2^n distinct combinations, and the largest unsigned value is 2^n - 1. Hexadecimal (base 16) is used as a compact shorthand because exactly four bits map to one hex digit, making long bit patterns readable and less error-prone. Converting between binary and hex is done by grouping bits in fours from the right. Bits are numbered from 0 at the least significant bit, and the place value of bit i is 2^i."
+  },
+  {
+    "id": "ib_cs_ch01_kp2",
+    "title": "Two's Complement and Signed Integers",
+    "summry": "Two's complement represents negative numbers without a separate sign bit trick: invert all the bits of the positive value and add one. In an n-bit two's complement system the range is -2^(n-1) to 2^(n-1) - 1, and the most significant bit has place value -2^(n-1). There is exactly one representation of zero, which is why two's complement is preferred over sign-and-magnitude. Subtraction is performed by adding the two's complement of the subtrahend, so one adder circuit handles both operations. Overflow is detected when the carry into and out of the most significant bit differ."
+  },
+  {
+    "id": "ib_cs_ch01_kp3",
+    "title": "Logic Gates and Boolean Algebra",
+    "summry": "The fundamental gates are NOT, AND, OR, NAND, NOR and XOR. NAND and NOR are called universal gates because either alone can implement every other gate. Truth tables enumerate all input combinations and the resulting output, and a Boolean expression can be derived from a truth table as a sum of products over the rows where the output is 1. De Morgan's laws, NOT(A AND B) = (NOT A) OR (NOT B) and NOT(A OR B) = (NOT A) AND (NOT B), allow expressions and circuits to be simplified, reducing the number of gates required."
+  },
+  {
+    "id": "ib_cs_ch02_kp1",
+    "title": "Layers of Network Communication",
+    "summry": "Network protocols are organised in layers so that each layer provides a service to the layer above and uses the layer below, which makes the system modular and easier to standardise. A common model has four layers: application (HTTP, SMTP, DNS), transport (TCP, UDP), network/internet (IP), and link (Ethernet, Wi-Fi). Each layer on the sender adds its own header to the data, and the matching layer on the receiver removes and interprets it - this is encapsulation. A protocol is an agreed set of rules covering message format, order and error handling."
+  },
+  {
+    "id": "ib_cs_ch02_kp2",
+    "title": "TCP versus UDP",
+    "summry": "TCP is connection-oriented: it performs a handshake, numbers segments, acknowledges receipt, retransmits lost data and reassembles segments in order, so it guarantees reliable, ordered delivery at the cost of extra overhead and delay. UDP is connectionless: it sends datagrams with no handshake, acknowledgement or retransmission, so it is fast and low-overhead but delivery and order are not guaranteed. TCP suits file transfer, email and web pages where every byte matters; UDP suits live streaming, voice over IP and online games where a late packet is worse than a lost one."
+  },
+  {
+    "id": "ib_cs_ch02_kp3",
+    "title": "IP Addressing and Subnetting",
+    "summry": "An IPv4 address is 32 bits written as four decimal octets. A subnet mask separates the network portion of the address from the host portion: bits set to 1 identify the network. The network address is the address ANDed with the mask, and the broadcast address has all host bits set to 1, so a subnet with h host bits has 2^h - 2 usable host addresses. CIDR notation such as /24 records the number of network bits. Subnetting improves security and performance by limiting broadcast traffic and allowing separate administrative control."
+  }
+]

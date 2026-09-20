@@ -57,19 +57,46 @@ const I18N = {
     err_send:      "Failed to send. Please retry.",
     // index page
     hero_sub:      "IB / AP Tutoring",
-    hero_desc:     "Move beyond passive answer reading. Explain your steps, respond to targeted peer questions, and master each concept with mentor guidance.",
-    hero_cta:      "Start practising",
+    hero_lead:     "You explain the problem. EasyEdu pushes back until the reasoning is airtight.",
+    hero_desc:     "Most study tools show you the answer. EasyEdu asks you to produce it: you write the full solution to a real IB or AP question, an AI study partner challenges the weak steps, and a tutor closes the gaps with the textbook reasoning. If you cannot explain it, you have not learned it yet.",
+    hero_cta:      "Try a question now",
+    hero_cta2:     "Browse all questions",
+    hero_hint:     "No account, no setup — pick a question and start typing.",
     hiw_title:     "How it works",
     hiw_s1_num:    "Step 1",
-    hiw_s1_title:  "Pick a question",
-    hiw_s1_desc:   "Browse questions organised by AP and IB course and chapter. Every question comes from the actual textbook.",
+    hiw_s1_title:  "Pick a real exam question",
+    hiw_s1_desc:   "Browse by AP and IB course and chapter. Every question is a full item with a worked reference answer and its underlying knowledge points.",
     hiw_s2_num:    "Step 2",
-    hiw_s2_title:  "Explain your reasoning",
-    hiw_s2_desc:   "Type your answer as if teaching a peer. Focus on the core mechanism behind each formula.",
+    hiw_s2_title:  "Explain it in your own words",
+    hiw_s2_desc:   "Type your solution the way you would teach a classmate — the reasoning, not just the final number. The tutor reads what you actually wrote.",
     hiw_s3_num:    "Step 3",
-    hiw_s3_title:  "Deepen your understanding",
-    hiw_s3_desc:   "Receive targeted follow-ups on surface-level steps, and tailored guidance from the tutor whenever you encounter a conceptual gap.",
-    courses_title: "Courses available",
+    hiw_s3_title:  "Get challenged, then corrected",
+    hiw_s3_desc:   "Right but shallow, and your study partner asks the follow-up that exposes the gap. Wrong or finished, and the tutor steps in with the underlying principle.",
+    courses_title: "Courses in this build",
+    courses_note:  "These courses are loaded from the question bank this server is actually serving.",
+    footer_note:   "EasyEdu is an open-source project. Question content is based on published AP and IB course material and is used for study purposes.",
+    stat_questions:"Questions",
+    stat_chapters: "Chapters",
+    stat_subjects: "Courses",
+    demo_notice:   "Public demo mode: this copy runs without a live AI model, so the study partner and tutor reply using the built-in worked solutions. The full explain-back loop works exactly as it does with a model attached — nothing else changes.",
+    live_notice:   "Live mode: an AI model is connected, so the study partner and tutor respond in their own words.",
+    demo_banner:   "Demo mode — responses come from the built-in reference answers, not a live AI model.",
+    cards_title:   "Knowledge cards",
+    cards_subtitle:"Every card is a knowledge point from the question bank. Read the title, say the explanation out loud, then flip to check yourself.",
+    cards_all:     "All courses",
+    cards_shuffle: "Shuffle",
+    cards_flip:    "Click the card to reveal the explanation",
+    cards_flip_back:"Click the card to hide the explanation",
+    cards_prev:    "Previous",
+    cards_next:    "Next",
+    cards_empty:   "No knowledge cards available.",
+    untitled_kp:   "Knowledge point",
+    kp_chapters:   "Chapters",
+    kp_list:       "Knowledge points",
+    kp_detail:     "Knowledge point detail",
+    kp_pick:       "Choose a knowledge point on the left to read its explanation",
+    kp_pick_chapter:"Choose a chapter to see its knowledge points",
+    no_bank:       "No question bank is loaded on this server yet.",
   },
   zh: {
     nav_home:      "首页",
@@ -122,21 +149,102 @@ const I18N = {
     err_send:      "发送消息失败，请重试。",
     // index page
     hero_sub:      "IB / AP 课程精练",
-    hero_desc:     "告别单纯死记硬背与被动看答案。由你主讲解题逻辑，同伴启发式追问，导师点拨重难点，让知识真正融会贯通。",
-    hero_cta:      "开始练习",
+    hero_lead:     "你来讲解，EasyEdu 一直追问到推理无懈可击。",
+    hero_desc:     "大多数学习工具直接把答案给你，EasyEdu 要你把答案讲出来：面对一道真实的 IB / AP 题目写出完整解法，AI 同学会挑战你站不住的步骤，辅导老师再用教材里的原理补齐缺口。讲不清楚，就是还没学会。",
+    hero_cta:      "马上试一道题",
+    hero_cta2:     "浏览全部题目",
+    hero_hint:     "无需注册、无需配置——选一道题就能开始写。",
     hiw_title:     "学习闭环",
     hiw_s1_num:    "第 1 步",
-    hiw_s1_title:  "挑选题目",
-    hiw_s1_desc:   "按 AP 与 IB 权威课程与章节精选题库，全面贴合考纲要求。",
+    hiw_s1_title:  "挑一道真题",
+    hiw_s2_desc:   "像给同学讲题一样写下完整解法——重点是推理过程，而不只是最后那个数字。老师看的是你真正写出来的东西。",
+    hiw_s1_desc:   "按 AP / IB 课程与章节浏览题库。每道题都配有参考答案与对应知识点。",
     hiw_s2_num:    "第 2 步",
-    hiw_s2_title:  "主讲思路",
-    hiw_s2_desc:   "自主写出完整解题逻辑与因果推导，而不只是给出孤立公式或选项。",
+    hiw_s2_title:  "用自己的话讲一遍",
     hiw_s3_num:    "第 3 步",
-    hiw_s3_title:  "追问与精讲",
-    hiw_s3_desc:   "当思路尚浅时接收针对性追问；遇到知识断层时，由辅导老师提供梯度点拨与考点归纳。",
-    courses_title: "已支持课程",
+    hiw_s3_title:  "先被追问，再被纠正",
+    hiw_s3_desc:   "讲对了但太浅，AI 同学会继续追问，把漏洞逼出来；讲错了或者已经讲完整，辅导老师会带着底层原理收尾。",
+    courses_title: "本次部署收录的课程",
+    courses_note:  "以下课程来自这台服务器实际加载的题库。",
+    footer_note:   "EasyEdu 是开源项目。题目内容基于公开的 AP / IB 课程资料，仅用于学习目的。",
+    stat_questions:"道题目",
+    stat_chapters: "个章节",
+    stat_subjects: "门课程",
+    demo_notice:   "公开演示模式：本次部署未接入实时 AI 模型，AI 同学与辅导老师会基于内置的参考答案与讲解来回应。完整的「讲题 — 追问 — 精讲」流程与接入模型时完全一致。",
+    live_notice:   "在线模式：已接入 AI 模型，AI 同学与辅导老师会用模型自己的话回应。",
+    demo_banner:   "演示模式——回复来自内置参考答案，而非实时 AI 模型。",
+    cards_title:   "知识点抽认卡",
+    cards_subtitle:"每张卡片都是题库里的一个知识点。先看标题，把解释讲一遍，再翻面检查自己。",
+    cards_all:     "全部课程",
+    cards_shuffle: "随机打乱",
+    cards_flip:    "点击卡片查看解释",
+    cards_flip_back:"点击卡片收起解释",
+    cards_prev:    "上一张",
+    cards_next:    "下一张",
+    cards_empty:   "暂无知识点卡片。",
+    untitled_kp:   "知识点",
+    kp_chapters:   "章节列表",
+    kp_list:       "知识点列表",
+    kp_detail:     "知识点详情",
+    kp_pick:       "请从左侧选择知识点查看详情",
+    kp_pick_chapter:"请选择章节查看知识点",
+    no_bank:       "这台服务器目前还没有加载题库。",
   }
 };
+
+/**
+ * Markdown -> HTML, with a plain-text fallback.
+ * Every page loads `marked` from a CDN. If that request is blocked (school
+ * network, offline review, CDN outage) `marked` is undefined and the page would
+ * otherwise throw; this keeps content readable as plain text instead.
+ */
+function mdToHtml(text) {
+  const src = text == null ? "" : String(text);
+
+  // Markdown treats "\(" as an escaped "(", so a Markdown pass would destroy the
+  // LaTeX delimiters before MathJax ever sees them. Lift the math out, render the
+  // rest as Markdown, then put the math back verbatim.
+  const maths = [];
+  const stashed = src.replace(/\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\$\$[\s\S]*?\$\$/g, (m) => {
+    maths.push(m);
+    return "@@EASYEDU_MATH_" + (maths.length - 1) + "@@";
+  });
+
+  let html;
+  if (window.marked && typeof window.marked.parse === "function") {
+    html = window.marked.parse(stashed);
+  } else {
+    const div = document.createElement("div");
+    div.textContent = stashed;
+    html = div.innerHTML.replace(/\n/g, "<br>");
+  }
+
+  return html.replace(/@@EASYEDU_MATH_(\d+)@@/g, (_, i) => maths[Number(i)]);
+}
+
+/** Configure marked once per page, tolerating a blocked CDN. */
+function setupMarked(options) {
+  if (window.marked && typeof window.marked.use === "function") {
+    window.marked.use(options);
+  }
+}
+
+/**
+ * Typeset LaTeX in the given elements, waiting for MathJax to finish loading.
+ * MathJax loads async from a CDN, so a page that renders quickly can call this
+ * before `typesetPromise` exists, which would leave raw "\( ... \)" on screen.
+ * `MathJax.startup.promise` resolves once the engine is ready.
+ */
+function typesetMath(elements) {
+  if (!window.MathJax || typeof window.MathJax.typesetPromise !== "function") return;
+  const run = () => window.MathJax.typesetPromise(elements).catch(() => {});
+  const ready = window.MathJax.startup && window.MathJax.startup.promise;
+  if (ready && typeof ready.then === "function") {
+    ready.then(run, run);
+  } else {
+    run();
+  }
+}
 
 function getCurrentLang() {
   return localStorage.getItem("easylang") || "en";
@@ -145,6 +253,8 @@ function getCurrentLang() {
 function setLang(lang) {
   localStorage.setItem("easylang", lang);
   applyI18n(lang);
+  // Let pages re-render strings they built in JavaScript
+  document.dispatchEvent(new CustomEvent("easylangchange", { detail: { lang } }));
 }
 
 function toggleLang() {

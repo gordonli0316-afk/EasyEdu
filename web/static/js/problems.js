@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const questionList  = document.getElementById('question-list');
     const currentChapterTitle = document.getElementById('current-chapter-title');
 
-    marked.use({ breaks: true, gfm: true });
+    setupMarked({ breaks: true, gfm: true });
 
     init();
 
@@ -96,6 +96,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderChapters() {
         chapterList.innerHTML = '';
+        if (chapters.length === 0) {
+            chapterList.innerHTML = `<li class="empty-tip">${t('no_bank')}</li>`;
+            currentChapterTitle.textContent = '';
+            questionList.innerHTML = `<p class="empty-tip">${t('no_bank')}</p>`;
+            return;
+        }
         chapters.forEach((chapter, idx) => {
             const li = document.createElement('li');
             li.className = 'chapter-item';
@@ -145,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const typeLabel = formatType(question.type);
             // Clean Chinese suffix from question title in EN mode
             const cleanedTitle = cleanTitle(question.title || '');
-            const titleHTML = marked.parse(cleanedTitle).replace(/<\/?p>/g, '');
+            const titleHTML = mdToHtml(cleanedTitle).replace(/<\/?p>/g, '');
             div.innerHTML = `
                 <div class="title">${titleHTML}</div>
                 <div class="meta">

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "ch01",
+    "title": "Cell Structure and Membranes (细胞结构与膜)",
+    "description": "Cell types, the fluid mosaic model, and transport across membranes.",
+    "knowledge_points": ["ib_bio_ch01_kp1", "ib_bio_ch01_kp2", "ib_bio_ch01_kp3"]
+  },
+  {
+    "id": "ch02",
+    "title": "Enzymes and Metabolism (酶与代谢)",
+    "description": "Enzyme specificity, catalysis, and the factors that control enzyme activity.",
+    "knowledge_points": ["ib_bio_ch02_kp1", "ib_bio_ch02_kp2"]
+  }
+]

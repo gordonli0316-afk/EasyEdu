@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 @router.get("/chapters", tags=["chapters"])
 async def get_chapters(subject: Optional[str] = None):
@@ -17,6 +17,9 @@ async def get_chapters(subject: Optional[str] = None):
         qa_system = qa_service.get_qa_system()
         chapters = qa_system.get_chapters(subject=subject)
         return chapters
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -67,5 +70,8 @@ async def get_subjects():
             })
 
         return result
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

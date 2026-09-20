@@ -3,23 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyEdu — IB/AP Tutoring</title>
+    <title>EasyEdu — Learn by explaining, not by copying answers</title>
+    <meta name="description" content="EasyEdu is a Feynman-style tutor for IB and AP courses. You explain the solution, an AI study partner pushes back, and a tutor fills the gaps.">
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1a202c; background: #fff; }
-        .page-wrap { max-width: 860px; margin: 0 auto; padding: 80px 24px 60px; }
+        .page-wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 64px; }
 
         /* hero */
-        .hero { text-align: center; padding: 48px 0 40px; border-bottom: 1px solid #e8ecf0; }
-        .hero h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 12px; }
+        .hero { text-align: center; padding: 40px 0 40px; border-bottom: 1px solid #e8ecf0; }
+        .hero h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 14px; }
         .hero h1 span { color: #2563eb; }
-        .hero p { font-size: 1.05rem; color: #4a5568; max-width: 540px; margin: 0 auto 20px; line-height: 1.65; }
-        .hero-cta { display: inline-block; background: #2563eb; color: #fff; padding: 11px 28px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+        .hero .hero-lead { font-size: 1.12rem; font-weight: 600; color: #1f2937; max-width: 620px; margin: 0 auto 12px; line-height: 1.5; }
+        .hero p.hero-desc { font-size: 1rem; color: #4a5568; max-width: 620px; margin: 0 auto 26px; line-height: 1.7; }
+        .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .hero-cta { display: inline-block; background: #2563eb; color: #fff; padding: 12px 30px; border-radius: 6px; font-weight: 600; font-size: 0.98rem; text-decoration: none; }
         .hero-cta:hover { background: #1d4ed8; }
+        .hero-cta.secondary { background: #fff; color: #2563eb; border: 1px solid #bfdbfe; }
+        .hero-cta.secondary:hover { background: #eff6ff; }
+        .hero-hint { margin-top: 14px; font-size: 0.85rem; color: #64748b; }
+
+        /* status banner */
+        .status-banner { margin: 22px auto 0; max-width: 640px; padding: 10px 16px; border-radius: 8px; font-size: 0.86rem; line-height: 1.55; text-align: left; }
+        .status-banner.demo { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .status-banner.live { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
 
         /* how it works */
-        .section { padding: 48px 0 8px; }
-        .section-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 28px; color: #111; }
+        .section { padding: 44px 0 4px; }
+        .section-title { font-size: 1.25rem; font-weight: 700; margin: 0 0 10px; color: #111; }
+        .section-note { font-size: 0.9rem; color: #64748b; margin: 0 0 26px; line-height: 1.6; }
 
         .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .step { background: #f8fafc; border: 1px solid #e8ecf0; border-radius: 8px; padding: 22px 20px; }
@@ -27,12 +39,28 @@
         .step h3 { font-size: 1rem; font-weight: 600; margin: 0 0 8px; }
         .step p { font-size: 0.88rem; color: #64748b; line-height: 1.6; margin: 0; }
 
-        /* subjects */
+        /* stats + subjects */
+        .stats { display: flex; gap: 28px; flex-wrap: wrap; margin: 4px 0 26px; }
+        .stat-num { font-size: 1.6rem; font-weight: 700; color: #1a202c; line-height: 1.1; }
+        .stat-label { font-size: 0.8rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
         .subjects { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
-        .subject-tag { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+        .subject-tag { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; text-decoration: none; }
+        .subject-tag:hover { background: #dbeafe; }
+
+        .page-footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid #e8ecf0; font-size: 0.82rem; color: #94a3b8; line-height: 1.7; }
 
         /* nav override */
         .nav-logo { font-size: 1.05rem; font-weight: 700; }
+
+        @media (max-width: 768px) {
+            .page-wrap { padding: 24px 16px 48px; }
+            .hero { padding: 24px 0 32px; }
+            .hero h1 { font-size: 1.7rem; }
+            .hero .hero-lead { font-size: 1rem; }
+            .steps { grid-template-columns: 1fr; gap: 14px; }
+            .stats { gap: 20px; }
+            .section { padding: 32px 0 4px; }
+        }
     </style>
 </head>
 <body>
@@ -42,23 +70,28 @@
             <a href="/" class="nav-item active" data-i18n="nav_home">Home</a>
             <a href="/problems" class="nav-item" data-i18n="nav_practice">Practice</a>
             <a href="/knowledge" class="nav-item" data-i18n="nav_knowledge">Knowledge</a>
-            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Upload</span>
-            <span class="nav-item nav-disabled" title="Coming soon" style="opacity:0.4;cursor:not-allowed;">Flashcards</span>
+            <a href="/flashcards" class="nav-item" data-i18n="nav_flash">Flashcards</a>
             <button id="lang-toggle-btn" onclick="toggleLang()" style="margin-left:12px;padding:4px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:0.85rem;font-weight:600;color:#374151;">中文</button>
         </div>
     </nav>
     <script src="/static/js/i18n.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', initI18n);</script>
 
     <div class="page-wrap">
 
         <div class="hero">
-            <h1><span>EasyEdu</span> — <span data-i18n="hero_sub">IB / AP Tutoring</span></h1>
-            <p data-i18n="hero_desc">
-                Instead of just looking at standard answers, you take the lead and explain the solution.
-                That one shift — you explain, peers question and tutors guide — turns fleeting memory into real mastery.
+            <h1><span>EasyEdu</span></h1>
+            <p class="hero-lead" data-i18n="hero_lead">You explain the problem. EasyEdu pushes back until the reasoning is airtight.</p>
+            <p class="hero-desc" data-i18n="hero_desc">
+                Most study tools show you the answer. EasyEdu asks you to produce it: you write the full solution to a real
+                IB or AP question, an AI study partner challenges the weak steps, and a tutor closes the gaps with the
+                textbook reasoning. If you cannot explain it, you have not learned it yet.
             </p>
-            <a href="/problems" class="hero-cta" data-i18n="hero_cta">Start practising</a>
+            <div class="hero-actions">
+                <a href="/demo" class="hero-cta" data-i18n="hero_cta">Try a question now</a>
+                <a href="/problems" class="hero-cta secondary" data-i18n="hero_cta2">Browse all questions</a>
+            </div>
+            <p class="hero-hint" data-i18n="hero_hint">No account, no setup — pick a question and start typing.</p>
+            <div id="status-banner" class="status-banner" style="display:none;"></div>
         </div>
 
         <div class="section">
@@ -66,34 +99,86 @@
             <div class="steps">
                 <div class="step">
                     <div class="step-num" data-i18n="hiw_s1_num">Step 1</div>
-                    <h3 data-i18n="hiw_s1_title">Pick a question</h3>
-                    <p data-i18n="hiw_s1_desc">Browse questions organised by AP and IB course and chapter. Every question comes from the actual textbook.</p>
+                    <h3 data-i18n="hiw_s1_title">Pick a real exam question</h3>
+                    <p data-i18n="hiw_s1_desc">Browse by AP and IB course and chapter. Every question is a full item with a worked reference answer and its underlying knowledge points.</p>
                 </div>
                 <div class="step">
                     <div class="step-num" data-i18n="hiw_s2_num">Step 2</div>
-                    <h3 data-i18n="hiw_s2_title">Explain your reasoning</h3>
-                    <p data-i18n="hiw_s2_desc">Type your answer as if you're teaching a classmate. Don't just copy the formula — explain why it works.</p>
+                    <h3 data-i18n="hiw_s2_title">Explain it in your own words</h3>
+                    <p data-i18n="hiw_s2_desc">Type your solution the way you would teach a classmate — the reasoning, not just the final number. The tutor reads what you actually wrote.</p>
                 </div>
                 <div class="step">
                     <div class="step-num" data-i18n="hiw_s3_num">Step 3</div>
-                    <h3 data-i18n="hiw_s3_title">Get pushed deeper</h3>
-                    <p data-i18n="hiw_s3_desc">If your explanation is right but surface-level, your study partner asks a follow-up. If there is a gap, your tutor steps in with targeted hints.</p>
+                    <h3 data-i18n="hiw_s3_title">Get challenged, then corrected</h3>
+                    <p data-i18n="hiw_s3_desc">Right but shallow, and your study partner asks the follow-up that exposes the gap. Wrong or finished, and the tutor steps in with the underlying principle.</p>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title" data-i18n="courses_title">Courses available</div>
-            <div class="subjects">
-                <span class="subject-tag">AP Statistics</span>
-                <span class="subject-tag">AP Physics</span>
-                <span class="subject-tag">AP CS Principles</span>
-                <span class="subject-tag">IB Biology</span>
-                <span class="subject-tag">IB Computer Science</span>
-                <span class="subject-tag">IB Math AA HL</span>
+            <div class="section-title" data-i18n="courses_title">Courses in this build</div>
+            <p class="section-note" data-i18n="courses_note">These courses are loaded from the question bank this server is actually serving.</p>
+            <div class="stats" id="stats"></div>
+            <div class="subjects" id="subject-list">
+                <span class="subject-tag" data-i18n="loading">Loading…</span>
             </div>
         </div>
 
+        <div class="page-footer">
+            <div data-i18n="footer_note">EasyEdu is an open-source project. Question content is based on published AP and IB course material and is used for study purposes.</div>
+        </div>
+
     </div>
+
+    <script>
+        // Fill in the course list and the response-mode notice from the live server.
+        (async function () {
+            try {
+                const res = await fetch('/api/status');
+                if (!res.ok) throw new Error('status unavailable');
+                const data = await res.json();
+
+                const list = document.getElementById('subject-list');
+                const pretty = s => s
+                    .split('_')
+                    .map(w => (['ap', 'ib', 'hl', 'sl', 'cs', 'aa', 'ai'].includes(w)
+                        ? w.toUpperCase()
+                        : w.charAt(0).toUpperCase() + w.slice(1)))
+                    .join(' ');
+                const names = (data.subjects || []).map(pretty);
+                list.innerHTML = names.length
+                    ? names.map(n => `<a class="subject-tag" href="/problems">${n}</a>`).join('')
+                    : '<span class="subject-tag">No question bank loaded</span>';
+
+                const counts = data.counts || {};
+                if (counts.questions) {
+                    const items = [
+                        [counts.questions, t('stat_questions')],
+                        [counts.chapters, t('stat_chapters')],
+                        [(data.subjects || []).length, t('stat_subjects')],
+                    ];
+                    document.getElementById('stats').innerHTML = items
+                        .map(([n, label]) => `<div class="stat"><div class="stat-num">${n}</div><div class="stat-label">${label}</div></div>`)
+                        .join('');
+                }
+
+                const banner = document.getElementById('status-banner');
+                if (data.mode === 'demo') {
+                    banner.className = 'status-banner demo';
+                    banner.textContent = t('demo_notice');
+                } else {
+                    banner.className = 'status-banner live';
+                    banner.textContent = t('live_notice');
+                }
+                banner.style.display = 'block';
+            } catch (err) {
+                console.error('status load failed', err);
+                document.getElementById('subject-list').innerHTML =
+                    '<span class="subject-tag">Could not reach the server</span>';
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', initI18n);
+    </script>
 </body>
 </html>

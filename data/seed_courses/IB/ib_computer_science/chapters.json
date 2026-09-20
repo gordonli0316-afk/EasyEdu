@@ -1,0 +1,14 @@
+[
+  {
+    "id": "ch01",
+    "title": "Data Representation and Logic (数据表示与逻辑)",
+    "description": "Binary, two's complement, and combinational logic.",
+    "knowledge_points": ["ib_cs_ch01_kp1", "ib_cs_ch01_kp2", "ib_cs_ch01_kp3"]
+  },
+  {
+    "id": "ch02",
+    "title": "Networks (计算机网络)",
+    "description": "Layered communication, transport protocols and IP addressing.",
+    "knowledge_points": ["ib_cs_ch02_kp1", "ib_cs_ch02_kp2", "ib_cs_ch02_kp3"]
+  }
+]

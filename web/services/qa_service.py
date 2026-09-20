@@ -4,8 +4,21 @@ from typing import Optional
 
 from src.knowledge_qa_system import KnowledgeQASystem
 from src.agents.llm.env import get_default_model_backend
+from src.agents.llm.health import active_mode
 
 logger = logging.getLogger(__name__)
+
+# 题库索引 + LangGraph 工作流只建一次：每个 endpoint 模块各自 new 一个
+# QAService 会重复加载整个题库（9 份副本），在小型容器上非常浪费。
+_shared_service: Optional["QAService"] = None
+
+
+def get_qa_service() -> "QAService":
+    """进程内共享的 QAService 单例。"""
+    global _shared_service
+    if _shared_service is None:
+        _shared_service = QAService()
+    return _shared_service
 
 
 def _model_backend() -> str:
@@ -28,6 +41,17 @@ class QAService:
             teacher_model_type=teacher_model_type or backend,
             student_model_type=student_model_type or backend,
         )
+
+    @property
+    def mode(self) -> str:
+        """ "demo" when answering without a model, otherwise "live"."""
+        return active_mode()
+
+    @property
+    def source(self) -> str:
+        """Which question bank is loaded: "generated" or "sample"."""
+        root = str(getattr(self.qa_system.index_system, "source_dir", "") or "")
+        return "sample" if "seed_courses" in root else "generated"
 
     def get_chapters(self, subject: Optional[str] = None):
         return self.qa_system.get_chapters(subject=subject)

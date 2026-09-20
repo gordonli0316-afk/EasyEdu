@@ -14,12 +14,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 
 from src.services.question_generator import QuestionGenerator
 from src.services.question_exporter import QuestionExporter
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
 question_generator = QuestionGenerator()
 question_exporter = QuestionExporter()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 
 class GenerateQuestionRequest(BaseModel):

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const emptyDetailPlaceholder = document.getElementById('empty-detail-placeholder');
     
     // 配置marked选项
-    marked.use({
+    setupMarked({
         breaks: true,  // 允许在换行时添加<br>标签
         gfm: true      // 使用GitHub风格的Markdown
     });
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await loadAllKnowledgeDetails();
         } catch (error) {
             console.error('初始化失败:', error);
-            knowledgeList.innerHTML = '<p class="empty-tip">加载失败，请刷新页面重试</p>';
+            knowledgeList.innerHTML = `<p class="empty-tip">${t('load_fail')}</p>`;
         }
     }
     
@@ -43,60 +43,15 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadAllKnowledgeDetails() {
         try {
             const response = await fetch('/api/knowledge/details/all');
-            if (!response.ok) {
-                throw new Error('获取知识点详情数据失败');
-            }
-            
+            if (!response.ok) throw new Error('knowledge details request failed');
             knowledgeDetails = await response.json();
-            console.log('已加载知识点详情信息:', Object.keys(knowledgeDetails).length);
         } catch (error) {
-            console.error('加载知识点详情失败:', error);
-            // 如果API调用失败，使用模拟数据作为备选
-            simulateKnowledgeDetails();
+            // 不再编造知识点标题：接口失败时留空，由页面显示空状态
+            console.error('loadAllKnowledgeDetails failed:', error);
+            knowledgeDetails = {};
         }
     }
-    
-    // 临时方法：模拟知识点标题数据
-    // 仅在API调用失败时使用此备选方法
-    function simulateKnowledgeDetails() {
-        console.warn('使用模拟数据作为备选方案');
-        // 初始化知识点详情映射
-        let allKnowledgeIds = [];
-        
-        // 收集所有知识点ID
-        for (const chapterId in knowledgePoints) {
-            allKnowledgeIds = allKnowledgeIds.concat(knowledgePoints[chapterId]);
-        }
-        
-        // 为每个知识点创建标题数据
-        allKnowledgeIds.forEach(kpId => {
-            // 一些知识点标题示例
-            let title = "";
-            
-            if (kpId.startsWith("kc")) {
-                title = "数据结构基本概念";
-            } else if (kpId.startsWith("kl")) {
-                title = "线性表";
-            } else if (kpId.startsWith("ks")) {
-                title = "栈和队列";
-            } else if (kpId.startsWith("kt")) {
-                title = "树和二叉树";
-            } else if (kpId.startsWith("kg")) {
-                title = "图";
-            } else if (kpId.startsWith("ka")) {
-                title = "算法分析";
-            } else {
-                title = "知识点";
-            }
-            
-            // 将知识点ID和标题存储到映射中
-            knowledgeDetails[kpId] = {
-                id: kpId,
-                title: title + " " + kpId.substring(2)
-            };
-        });
-    }
-    
+
     // 加载章节列表
     async function loadChapters() {
         try {
@@ -112,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             await loadAllKnowledgePoints();
         } catch (error) {
             console.error('加载章节失败:', error);
-            chapterList.innerHTML = '<li class="empty-tip">加载章节失败，请刷新重试</li>';
+            chapterList.innerHTML = `<li class="empty-tip">${t('load_fail')}</li>`;
         }
     }
     
@@ -213,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 如果之前是活动的，则折叠它（清空知识点列表）
             currentChapter = null;
             currentChapterTitle.textContent = '';
-            knowledgeList.innerHTML = '<p class="empty-tip">请选择章节查看知识点</p>';
+            knowledgeList.innerHTML = `<p class="empty-tip">${t('select_tip')}</p>`;
         }
     }
     
@@ -222,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const chapterKnowledgePoints = knowledgePoints[chapterId] || [];
         
         if (!chapterKnowledgePoints || chapterKnowledgePoints.length === 0) {
-            knowledgeList.innerHTML = '<p class="empty-tip">该章节暂无知识点</p>';
+            knowledgeList.innerHTML = `<p class="empty-tip">${t('no_kp')}</p>`;
             return;
         }
         
@@ -238,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const titleDiv = document.createElement('div');
             titleDiv.className = 'knowledge-title-text';
-            titleDiv.textContent = kpTitle || '知识点';
+            titleDiv.textContent = kpTitle || t('untitled_kp');
             
             div.appendChild(titleDiv);
             
@@ -282,9 +237,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // 只显示干净的知识点标题，不暴露内部ID
-            knowledgeTitle.innerHTML = `<span class="knowledge-title-label">${kpDetail.title || '知识点'}</span>`;
+            knowledgeTitle.innerHTML = `<span class="knowledge-title-label">${kpDetail.title || t('untitled_kp')}</span>`;
             
-            knowledgeSummary.innerHTML = '<div style="text-align: center; padding: 20px;">加载中...</div>';
+            knowledgeSummary.innerHTML = `<div style="text-align: center; padding: 20px;">${t('loading')}</div>`;
             
             // 获取知识点详情
             const response = await fetch(`/api/knowledge/${knowledgeId}`);
@@ -295,13 +250,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const summary = await response.json();
             
             // 使用marked将Markdown转换为HTML
-            const renderedHTML = marked.parse(summary);
+            const renderedHTML = mdToHtml(summary);
             
             // 更新UI (仅更新内容，标题已在上面更新)
             knowledgeSummary.innerHTML = renderedHTML;
         } catch (error) {
             console.error('加载知识点详情失败:', error);
-            knowledgeSummary.innerHTML = '<div class="error-message">加载知识点详情失败，请重试</div>';
+            knowledgeSummary.innerHTML = `<div class="error-message">${t('kp_fail')}</div>`;
         }
     }
 }); 

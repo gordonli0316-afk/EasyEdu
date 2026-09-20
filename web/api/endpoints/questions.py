@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 @router.get("/chapters/{chapter_id}/questions", tags=["questions"])
 async def get_questions_by_chapter(chapter_id: str):
@@ -10,6 +10,9 @@ async def get_questions_by_chapter(chapter_id: str):
     try:
         questions = qa_service.get_questions_by_chapter(chapter_id)
         return questions
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -21,6 +24,9 @@ async def get_question_detail(question_id: str):
         if not question:
             raise HTTPException(status_code=404, detail=f"问题未找到: {question_id}")
         return question
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -30,6 +36,9 @@ async def get_knowledge_points(question_id: str):
     try:
         kps = qa_service.get_related_knowledge_points(question_id)
         return kps
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -39,5 +48,8 @@ async def get_similar_questions(question_id: str):
     try:
         questions = qa_service.get_similar_questions(question_id)
         return questions
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

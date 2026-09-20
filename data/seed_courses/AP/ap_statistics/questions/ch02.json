@@ -1,0 +1,55 @@
+[
+  {
+    "id": "ap_stats_ch02_q1",
+    "title": "The law of large numbers and the gambler's fallacy",
+    "content": "A fair coin is tossed 10 times and comes up heads 9 times.\n\n(a) A student says: \"Tails is now due — the coin owes us, so the next 10 tosses must have more tails to even things out.\" Identify the error in this reasoning and name the correct principle.\n(b) Explain what actually happens to the proportion of heads as the number of tosses becomes very large.\n(c) If the coin is tossed 10,000 more times, roughly how many heads do you expect in those 10,000 tosses?",
+    "type": "concept",
+    "difficulty": 3,
+    "knowledge_points": [
+      "ap_stats_ch02_kp1"
+    ],
+    "reference_answer": {
+      "content": "(a) The error is the gambler's fallacy: the coin has no memory. Tosses are independent, so past results do not change the probability of the next toss. The correct principle is the law of large numbers.\n(b) The proportion of heads approaches 0.5. It converges because the number of heads grows roughly like n/2, so the absolute difference from n/2 grows while the proportion of that difference shrinks.\n(c) About 5,000 heads.",
+      "explanation": "Independence is the core idea: P(heads) stays 1/2 on every toss no matter what happened before. Students often confuse 'the proportion converges to 1/2' with 'the counts balance out'. In fact the difference (heads - tails) tends to wander further from zero in absolute terms, but it becomes negligible relative to n, which is why the proportion still converges. Part (c) follows directly from independence: expected heads in 10,000 tosses is 10,000 x 0.5 = 5,000."
+    },
+    "chapter": "ch02",
+    "subject": "ap_statistics",
+    "course": "AP"
+  },
+  {
+    "id": "ap_stats_ch02_q2",
+    "title": "Sampling distribution of a sample proportion",
+    "content": "A university reports that 40% of its students own a bicycle. A researcher selects a random sample of 300 students and records the proportion who own a bicycle.\n\n(a) Give the mean and the standard deviation of the sampling distribution of the sample proportion.\n(b) Check whether the distribution is approximately Normal, showing the conditions.\n(c) Describe what happens to the standard deviation if the sample size is increased to 1200.",
+    "type": "calculation",
+    "difficulty": 3,
+    "knowledge_points": [
+      "ap_stats_ch02_kp2",
+      "ap_stats_ch02_kp3"
+    ],
+    "reference_answer": {
+      "content": "(a) mu_p-hat = p = 0.40. sigma_p-hat = sqrt(0.40 x 0.60 / 300) = sqrt(0.0008) = 0.0283.\n(b) Large Counts: np = 300(0.40) = 120 >= 10 and n(1-p) = 300(0.60) = 180 >= 10, so the sampling distribution is approximately Normal.\n(c) sigma_p-hat = sqrt(0.40 x 0.60 / 1200) = 0.0141, which is half of 0.0283.",
+      "explanation": "The sampling distribution of p-hat is centred at the true proportion and its spread is sqrt(p(1-p)/n). The sample must also be a random sample of at most 10% of the population, which the 10% condition covers. Because the standard deviation depends on 1/sqrt(n), multiplying n by 4 multiplies the standard deviation by 1/sqrt(4) = 1/2. That inverse-square-root relationship is the concept most often missed: students say the spread 'halves' only after checking that n quadrupled."
+    },
+    "chapter": "ch02",
+    "subject": "ap_statistics",
+    "course": "AP"
+  },
+  {
+    "id": "ap_stats_ch02_q3",
+    "title": "When is the Central Limit Theorem needed?",
+    "content": "Two researchers each take many random samples of size 50.\n\n- Researcher A samples from a population of adult heights, which is approximately Normal.\n- Researcher B samples from a population of household sizes, which is strongly right-skewed.\n\nFor each researcher, describe the shape of the sampling distribution of the sample mean. Explain the role of the Central Limit Theorem in each case, and state what would change if the sample size were only 5.",
+    "type": "application",
+    "difficulty": 4,
+    "knowledge_points": [
+      "ap_stats_ch02_kp3",
+      "ap_stats_ch02_kp2"
+    ],
+    "reference_answer": {
+      "content": "Researcher A: the sampling distribution of xbar is exactly Normal for any sample size, because the population itself is Normal.\nResearcher B: with n = 50 the sampling distribution is approximately Normal by the Central Limit Theorem, even though the population is strongly skewed.\nWith n = 5, Researcher A's sampling distribution is still Normal, but Researcher B's would still show noticeable skew — the CLT needs a reasonably large n when the population is strongly skewed.",
+      "explanation": "The Central Limit Theorem says the sampling distribution of the sample mean becomes approximately Normal as n increases, whatever the population shape, provided the observations are independent and the population has finite standard deviation. If the population is Normal, no approximation is needed: the sampling distribution is Normal for every n. The required n depends on how non-Normal the population is: mildly skewed populations are fine with n around 30, but strongly skewed populations with outliers (like household size) need a larger n. Both sampling distributions have mean mu and standard deviation sigma/sqrt(n) in every case."
+    },
+    "chapter": "ch02",
+    "subject": "ap_statistics",
+    "course": "AP"
+  }
+]

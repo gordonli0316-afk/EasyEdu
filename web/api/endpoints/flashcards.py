@@ -12,11 +12,11 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from src.services.flashcard_service import FlashCardService
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
 flashcard_service = FlashCardService()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 # 简单的内存存储（生产环境应使用数据库）
 flashcard_storage = {}

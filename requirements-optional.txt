@@ -1,0 +1,32 @@
+# ============================================
+# EasyEdu — optional / non-runtime dependencies
+# Nothing here is needed to run the public website.
+# Install the groups you actually use.
+# ============================================
+
+# --- File upload: PDF / image -> text -> questions ---
+# Also needs the system package poppler-utils (pdftoppm):
+#   Debian/Ubuntu: sudo apt-get install poppler-utils
+#   macOS:         brew install poppler
+pdfplumber>=0.7.0
+PyMuPDF>=1.18.0
+Pillow>=9.0.0
+pdf2image>=1.16.0
+paddleocr>=2.6.0
+
+# --- Export questions to Office formats ---
+openpyxl>=3.0.0
+python-docx>=0.8.11
+reportlab>=3.6.0
+
+# --- Question-bank generation from textbooks (scripts/ingest_textbooks.py) ---
+tqdm>=4.62.0
+requests>=2.25.0
+
+# --- QLoRA fine-tuning and self-hosted vLLM serving (GPU machine only) ---
+# torch>=2.0.0
+# transformers>=4.50.0
+# peft>=0.10.0
+# bitsandbytes>=0.43.0
+# accelerate>=0.30.0
+# vllm>=0.8.0

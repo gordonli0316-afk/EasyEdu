@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ap_physics_ch01_q1",
+    "title": "Ball thrown straight up",
+    "content": "A student throws a ball straight upward from ground level with an initial speed of 12 m/s. Air resistance is negligible. Use \\(g = 9.8\\ \\text{m/s}^2\\).\n\n(a) How long does the ball take to reach its highest point?\n(b) What is the maximum height above the ground?\n(c) What are the velocity and the acceleration of the ball at its highest point?\n(d) How long is the ball in the air before it returns to ground level?",
+    "type": "calculation",
+    "difficulty": 3,
+    "chapter": "ch01",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch01_kp2", "ap_physics_ch01_kp3", "ap_physics_ch01_kp1"],
+    "reference_answer": {
+      "content": "(a) At the top v = 0, so 0 = 12 - 9.8t gives t = 1.22 s.\n(b) v^2 = v0^2 - 2g(y - y0) with v = 0 gives y = 12^2 / (2 x 9.8) = 7.35 m.\n(c) Velocity is 0 m/s; acceleration is 9.8 m/s^2 downward.\n(d) By symmetry the flight time is twice the rise time: 2.45 s.",
+      "explanation": "Take upward as positive, so a = -9.8 m/s^2 throughout. The critical insight for part (c) is that zero velocity at the top does not mean zero acceleration: the ball is still changing velocity at 9.8 m/s^2 downward, which is exactly why it does not stay there. Part (d) can be justified by symmetry (rise time equals fall time from rest through the same height) or by solving y = 0 for t, which gives t = 2v0/g. Note the answer is independent of the ball's mass."
+    }
+  },
+  {
+    "id": "ap_physics_ch01_q2",
+    "title": "Reading a velocity-time graph",
+    "content": "A cart moves along a straight track. Its velocity-time graph is a straight line that starts at \\(+6.0\\ \\text{m/s}\\) at \\(t = 0\\), crosses zero at \\(t = 3.0\\ \\text{s}\\), and continues as a straight line to \\(-6.0\\ \\text{m/s}\\) at \\(t = 6.0\\ \\text{s}\\).\n\n(a) Determine the acceleration of the cart.\n(b) Find the displacement of the cart from \\(t = 0\\) to \\(t = 6.0\\ \\text{s}\\).\n(c) Find the total distance travelled over the same interval.\n(d) Describe the motion of the cart in words.",
+    "type": "application",
+    "difficulty": 4,
+    "chapter": "ch01",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch01_kp1", "ap_physics_ch01_kp2"],
+    "reference_answer": {
+      "content": "(a) a = slope = (-6.0 - 6.0) / 6.0 = -2.0 m/s^2.\n(b) Displacement = area under the graph. The positive triangle (0 to 3 s) has area (1/2)(3.0)(6.0) = +9.0 m; the negative triangle (3 to 6 s) has area (1/2)(3.0)(-6.0) = -9.0 m. Total displacement = 0 m.\n(c) Total distance = 9.0 + 9.0 = 18 m.\n(d) The cart moves in the positive direction while slowing down, stops momentarily at t = 3.0 s, then moves in the negative direction while speeding up.",
+      "explanation": "The slope of a v-t graph is acceleration and the signed area is displacement. Here the cart reverses direction at t = 3.0 s, so displacement and distance differ: the two areas cancel for displacement but add for distance. A strong answer explains that acceleration is constant and negative for the whole interval, so the cart is decelerating during the first half (velocity and acceleration have opposite signs) and accelerating in the negative direction during the second half."
+    }
+  },
+  {
+    "id": "ap_physics_ch01_q3",
+    "title": "Two objects dropped from the same height",
+    "content": "A heavy steel ball and a light plastic ball are dropped at the same instant from the same height from a tall tower. Air resistance is negligible.\n\nA classmate predicts: \"The steel ball hits the ground first because it is heavier and gravity pulls it harder.\"\n\n(a) Identify what is correct in that statement and what is wrong with it.\n(b) Explain, using Newton's second law, why the two balls land at the same time.\n(c) State one change to the experiment that would make the prediction about the steel ball correct.",
+    "type": "concept",
+    "difficulty": 3,
+    "chapter": "ch01",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch01_kp3", "ap_physics_ch02_kp1"],
+    "reference_answer": {
+      "content": "(a) It is correct that the gravitational force on the steel ball is larger. It is wrong to conclude a larger acceleration: the steel ball also has proportionally more mass, so the acceleration is the same.\n(b) Weight is W = mg, and Newton's second law gives a = sum F / m = mg / m = g. The mass cancels, so both balls have acceleration 9.8 m/s^2 downward and, starting from rest at the same height, they land together.\n(c) Add air resistance (or drop them from a much greater height).",
+      "explanation": "The misconception is conflating force with acceleration. Gravity does exert a bigger force on the steel ball, but inertia scales with mass in exactly the same proportion, so the ratio F/m - the acceleration - is identical. Adding air resistance breaks the symmetry because drag depends on shape and speed rather than mass, so the heavier ball, being less affected by drag relative to its inertia, then lands first."
+    }
+  },
+  {
+    "id": "ap_physics_ch02_q1",
+    "title": "Elevator and the bathroom scale",
+    "content": "A 62 kg student stands on a bathroom scale inside an elevator. The scale reads the normal force it exerts on the student. Use \\(g = 9.8\\ \\text{m/s}^2\\).\n\n(a) What does the scale read when the elevator is at rest?\n(b) What does the scale read when the elevator accelerates upward at \\(2.0\\ \\text{m/s}^2\\)?\n(c) What does the scale read when the elevator accelerates downward at \\(2.0\\ \\text{m/s}^2\\)?\n(d) The cable snaps and the elevator is in free fall. What does the scale read, and is the student weightless?",
+    "type": "calculation",
+    "difficulty": 4,
+    "chapter": "ch02",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch02_kp1", "ap_physics_ch02_kp2"],
+    "reference_answer": {
+      "content": "(a) At rest a = 0, so N = mg = 62 x 9.8 = 608 N.\n(b) With a = +2.0 m/s^2 upward: N - mg = ma, so N = m(g + a) = 62 x 11.8 = 732 N.\n(c) With a = -2.0 m/s^2: N = m(g - 2.0) = 62 x 7.8 = 484 N.\n(d) In free fall a = g downward, so N = m(g - g) = 0 N. The student is apparently weightless but the gravitational force on them is still 608 N.",
+      "explanation": "The scale reads the normal force, not the weight. The free-body diagram has two vertical forces: N upward and mg downward. Taking upward as positive gives N - mg = ma, so N = m(g + a). This explains why a scale reads high when accelerating upward and low when accelerating downward. In free fall the student and the elevator accelerate together at g, so no normal force is needed; 'weightless' means the apparent weight is zero, not that gravity has disappeared."
+    }
+  },
+  {
+    "id": "ap_physics_ch02_q2",
+    "title": "Block on a rough horizontal surface",
+    "content": "A 5.0 kg block is pushed along a horizontal floor by a horizontal force of 24 N. The coefficient of kinetic friction between the block and the floor is 0.30 and the coefficient of static friction is 0.40. Use \\(g = 9.8\\ \\text{m/s}^2\\).\n\n(a) Draw the free-body diagram and calculate the normal force.\n(b) Determine whether the block moves when the 24 N force is applied, and justify your answer.\n(c) If it moves, calculate the acceleration.\n(d) The push is removed while the block is still sliding. Describe the motion afterwards and calculate the acceleration.",
+    "type": "calculation",
+    "difficulty": 4,
+    "chapter": "ch02",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch02_kp3", "ap_physics_ch02_kp2", "ap_physics_ch02_kp1"],
+    "reference_answer": {
+      "content": "(a) Forces: weight mg = 49 N down, normal force N up, applied force 24 N horizontally, friction opposing motion. Vertically a = 0 so N = mg = 49 N.\n(b) f_s,max = mu_s N = 0.40 x 49 = 19.6 N. Since the applied 24 N exceeds 19.6 N, the block slides.\n(c) f_k = mu_k N = 0.30 x 49 = 14.7 N. a = (24 - 14.7) / 5.0 = 1.86 m/s^2.\n(d) Only kinetic friction acts, opposing the motion: a = -14.7 / 5.0 = -2.94 m/s^2, so the block slows down and stops.",
+      "explanation": "The two-stage decision is the key idea: first compare the applied force with the maximum static friction to decide whether the block moves at all, then switch to kinetic friction. Using mu_s in part (c) or mu_k in part (b) is the most common error, and it comes from not distinguishing 'about to slide' from 'already sliding'. Note that friction after the push is removed still opposes the current motion, so it decelerates the block until it stops, and then static friction holds it at rest."
+    }
+  },
+  {
+    "id": "ap_physics_ch02_q3",
+    "title": "Two blocks connected by a string",
+    "content": "Blocks of mass \\(m_1 = 3.0\\ \\text{kg}\\) and \\(m_2 = 2.0\\ \\text{kg}\\) sit on a frictionless horizontal table and are connected by a light string. A horizontal force of \\(15\\ \\text{N}\\) is applied to \\(m_1\\), pulling the pair to the right.\n\n(a) Calculate the acceleration of the system.\n(b) Calculate the tension in the string.\n(c) Explain why the tension is less than the applied force.\n(d) State how your answer to (b) would change if the 15 N force were applied to \\(m_2\\) instead.",
+    "type": "application",
+    "difficulty": 4,
+    "chapter": "ch02",
+    "subject": "ap_physics",
+    "course": "AP",
+    "knowledge_points": ["ap_physics_ch02_kp1", "ap_physics_ch02_kp2"],
+    "reference_answer": {
+      "content": "(a) Treat the pair as one system: a = F / (m1 + m2) = 15 / 5.0 = 3.0 m/s^2.\n(b) For m2 alone the only horizontal force is the tension: T = m2 a = 2.0 x 3.0 = 6.0 N.\n(c) The tension only has to accelerate m2, whereas the applied force must accelerate both blocks, so the two forces differ.\n(d) The acceleration is unchanged at 3.0 m/s^2, but the tension becomes T = m1 a = 3.0 x 3.0 = 9.0 N.",
+      "explanation": "The system approach gives the acceleration in one step, and then an isolated free-body diagram of a single block gives the internal force. Tension is an internal force for the whole system, so it never appears in the system equation - that is why using the system to find T directly fails. The tension must be smaller than the applied force because it only accelerates the block behind it; the block nearest the applied force carries the larger share. Reversing the force changes which mass the tension must accelerate, which is why the tension changes while the acceleration does not."
+    }
+  }
+]

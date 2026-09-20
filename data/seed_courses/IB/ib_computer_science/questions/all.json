@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ib_cs_ch01_q1",
+    "title": "Two's complement conversion",
+    "content": "(a) Convert the denary value \\(-45\\) into 8-bit two's complement binary. Show each step.\n(b) Convert the 8-bit two's complement pattern `1110 0110` into denary.\n(c) State the range of values that can be represented in 8-bit two's complement and explain why the range is asymmetric.\n(d) Explain why two's complement is preferred over sign-and-magnitude for representing negative integers.",
+    "type": "calculation",
+    "difficulty": 4,
+    "chapter": "ch01",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch01_kp2", "ib_cs_ch01_kp1"],
+    "reference_answer": {
+      "content": "(a) 45 = 0010 1101. Invert: 1101 0010. Add 1: 1101 0011. So -45 = 1101 0011.\n(b) The leading bit is 1, so the value is negative. Invert 1110 0110 to get 0001 1001 = 25, then add 1: -(25 + 1) = -26.\n(c) The range is -128 to +127. It is asymmetric because there is only one representation of zero, leaving one extra pattern at the negative end (1000 0000 represents -128).\n(d) Two's complement has a single representation of zero, avoids the sign-and-magnitude problem of two zeros, and allows subtraction to be carried out by addition using the same circuit.",
+      "explanation": "The method is invert-then-add-one in both directions, and stating the method is not enough - each step must be shown so the reasoning can be followed. For part (b), a faster route is to use place values with the most significant bit weighted as -128: -128 + 64 + 32 + 4 + 2 = -26, which is a good check. The asymmetry in (c) is the key conceptual point: with 8 bits there are 256 patterns, and because zero uses only one of them the negatives get 128 patterns and the positives 127. Part (d) should mention both the unique zero and the shared adder circuit for addition and subtraction."
+    }
+  },
+  {
+    "id": "ib_cs_ch01_q2",
+    "title": "Designing a logic circuit from a specification",
+    "content": "A safety interlock controls a machine. The machine may run (output R = 1) only when:\n\n- the guard is closed (G = 1), and\n- the operator has pressed the start button (S = 1), and\n- the emergency stop is NOT pressed (E = 0).\n\n(a) Write the Boolean expression for R.\n(b) Construct the truth table for the three inputs and the output.\n(c) Draw or describe a circuit using AND, OR and NOT gates that implements R.\n(d) Explain how the circuit could be simplified if only NAND gates were available.",
+    "type": "application",
+    "difficulty": 3,
+    "chapter": "ch01",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch01_kp3"],
+    "reference_answer": {
+      "content": "(a) R = G AND S AND (NOT E).\n(b) The truth table has 8 rows; R = 1 only in the row G = 1, S = 1, E = 0. All other rows give R = 0.\n(c) Feed E through a NOT gate, then feed that output together with G and S into a three-input AND gate (or two cascaded two-input AND gates).\n(d) NAND is a universal gate: replace the AND of G, S and NOT E with a NAND gate followed by a NOT gate (a NAND gate with its inputs joined), and build the NOT E using a NAND gate with E connected to both inputs.",
+      "explanation": "This is a sum-of-products design in which only one of the eight input combinations produces a 1, so the expression is a single product term with E inverted. The truth table is the evidence that the expression matches the specification, and every row must have a defined output because a safety circuit must fail safe rather than leave an undefined state. For part (d) the important concept is universality: any Boolean function can be built from NAND gates alone, so a manufacturer can standardise on one gate type. The double-NAND trick reproduces AND because NAND followed by inversion restores the AND operation."
+    }
+  },
+  {
+    "id": "ib_cs_ch01_q3",
+    "title": "Why hexadecimal is used",
+    "content": "A network technician reads a packet header containing the bytes `1011 1100 0010 1111`.\n\n(a) Convert this 16-bit pattern to hexadecimal, showing how the bits are grouped.\n(b) State the denary value of the pattern if it is interpreted as an unsigned integer.\n(c) A classmate says hexadecimal makes the computer faster because it is a shorter notation. Identify the misunderstanding and give two genuine reasons for using hexadecimal.",
+    "type": "concept",
+    "difficulty": 2,
+    "chapter": "ch01",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch01_kp1"],
+    "reference_answer": {
+      "content": "(a) Group the bits into fours: 1011 1100 0010 1111, so the hex digits are B C 2 F, giving 0xBC2F.\n(b) 0xBC2F = 11 x 4096 + 12 x 256 + 2 x 16 + 15 = 45056 + 3072 + 32 + 15 = 48175.\n(c) The misunderstanding is that hexadecimal is only a human-facing shorthand; the computer still stores and processes the same binary bits. Genuine reasons: hex is far shorter and easier to read and transcribe without error than long binary strings, and because four bits map exactly to one hex digit, conversion to and from binary is direct rather than involving arithmetic.",
+      "explanation": "Grouping the bits in fours from the right is what makes the conversion mechanical; grouping from the left, or regrouping the bytes, is the usual mistake. Part (b) tests place value in base 16 and provides a good check that the hex conversion was correct. The conceptual target in (c) is that representation is a layer over the same underlying bits: hexadecimal does not change the machine's speed, only the readability of the data for humans, which matters when inspecting memory dumps, colours, MAC addresses and packet headers."
+    }
+  },
+  {
+    "id": "ib_cs_ch02_q1",
+    "title": "Choosing TCP or UDP",
+    "content": "A company runs three services on its network:\n\n1. a live video call between two offices,\n2. a nightly backup of accounting files to a remote server,\n3. a multiplayer game sending player positions ten times per second.\n\n(a) For each service, recommend TCP or UDP and justify your choice.\n(b) Explain how TCP guarantees that the backup file arrives complete and in order.\n(c) Explain one consequence of using UDP for the backup instead.",
+    "type": "application",
+    "difficulty": 3,
+    "chapter": "ch02",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch02_kp2"],
+    "reference_answer": {
+      "content": "(a) 1: UDP, because a late packet is useless in live audio and video, and retransmission would cause delay and jitter; occasional lost frames are tolerable. 2: TCP, because every byte of the backup must arrive correctly, and latency does not matter. 3: UDP, because positions are only useful if they are current, and re-sending an old position wastes bandwidth.\n(b) TCP numbers each segment, requires acknowledgements from the receiver, retransmits any segment that is not acknowledged within a timeout, and uses the sequence numbers to reorder segments before delivering them to the application.\n(c) The backup could be incomplete or corrupted with no automatic recovery, because UDP provides no acknowledgement or retransmission; the application would have to detect and repair the loss itself.",
+      "explanation": "The deciding question is whether reliability or timeliness matters more for that application. In real-time media the newest data is the most valuable, so waiting for a retransmission makes the result worse, not better - this is why UDP dominates voice, video and gaming. File transfer is the opposite case, where a single missing byte makes the file unusable. Part (b) should describe the mechanisms in sequence (sequencing, acknowledgement, timeout, retransmission, reordering) rather than saying only that TCP 'is reliable'."
+    }
+  },
+  {
+    "id": "ib_cs_ch02_q2",
+    "title": "Subnetting a small office network",
+    "content": "A small office is allocated the network `192.168.10.0/24` and must divide it into four equal subnets.\n\n(a) State the new subnet mask in dotted decimal notation and in CIDR notation.\n(b) State how many usable host addresses each subnet provides and explain the calculation.\n(c) Give the network address and the broadcast address of the second subnet.\n(d) Explain one benefit and one cost of this subnetting decision.",
+    "type": "calculation",
+    "difficulty": 4,
+    "chapter": "ch02",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch02_kp3", "ib_cs_ch02_kp1"],
+    "reference_answer": {
+      "content": "(a) Four subnets need 2 bits, so the prefix becomes /26: 255.255.255.192.\n(b) 6 host bits remain, giving 2^6 - 2 = 62 usable host addresses. The two addresses removed are the network address (all host bits 0) and the broadcast address (all host bits 1).\n(c) The second subnet is 192.168.10.64/26: network address 192.168.10.64, broadcast address 192.168.10.127.\n(d) Benefit: broadcast traffic is confined to each subnet and each department can be administered and secured separately. Cost: 2 addresses are lost per subnet and the addressing scheme is more complex to plan and document.",
+      "explanation": "Borrowing 2 bits gives 4 combinations, which is exactly the requirement; borrowing only 1 bit would give 2 subnets and borrowing 3 would give 8 with unnecessary address loss. The subnet boundaries step by 64 (the block size), giving .0, .64, .128 and .192, so the second subnet starts at .64 and its broadcast is .127 because the next subnet begins at .128. The -2 in part (b) is not optional; forgetting the network and broadcast addresses is the most common error. Part (d) should recognise that subnetting trades address efficiency for control."
+    }
+  },
+  {
+    "id": "ib_cs_ch02_q3",
+    "title": "Explaining encapsulation",
+    "content": "(a) Explain what is meant by encapsulation in layered network communication, referring to the role of headers.\n(b) Describe the path of a web request from a browser to a web server, naming the layer that handles each step.\n(c) Explain one advantage of dividing network communication into layers.",
+    "type": "concept",
+    "difficulty": 3,
+    "chapter": "ch02",
+    "subject": "ib_computer_science",
+    "course": "IB",
+    "knowledge_points": ["ib_cs_ch02_kp1"],
+    "reference_answer": {
+      "content": "(a) Encapsulation is the process in which each layer adds its own header (containing control information for that layer) to the data passed down from the layer above, so the original data becomes the payload of the next layer. At the receiver each layer removes and interprets its own header, reversing the process.\n(b) The browser creates an HTTP request at the application layer; DNS resolves the domain name to an IP address; the transport layer (TCP) splits the request into numbered segments and sets up a connection; the network layer (IP) adds source and destination IP addresses and routes the packets; the link layer (Ethernet or Wi-Fi) adds MAC addresses and transmits frames over the physical medium. The server reverses these steps, and TCP acknowledges and reassembles the data.\n(c) Layering makes the system modular: a layer can be changed or improved (for example Wi-Fi replacing Ethernet, or IPv6 replacing IPv4) without redesigning the other layers, and each layer can be developed and tested independently.",
+      "explanation": "The essential idea of encapsulation is that a header is added by each layer and belongs to that layer only - the layer above never reads it, which is what keeps the layers independent. In part (b) the direction matters: the data is passed down the stack on the sender and up the stack on the receiver. The strongest answers to (c) give a concrete example of a technology that changed at one layer without affecting the others, rather than repeating the word 'modular'."
+    }
+  }
+]

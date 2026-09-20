@@ -1,0 +1,56 @@
+[
+  {
+    "id": "ap_stats_ch01_q1",
+    "title": "Skewed income data — which center?",
+    "content": "The distribution of household incomes in a large city is strongly right-skewed, with a few extremely wealthy households.\n\nA reporter wants a single number that best describes a \"typical\" household income in the city.\n\n(a) Should the reporter use the mean or the median? Justify your answer by referring to the shape of the distribution.\n(b) State the relationship between the mean and the median for this distribution.",
+    "type": "concept",
+    "difficulty": 2,
+    "knowledge_points": [
+      "ap_stats_ch01_kp1",
+      "ap_stats_ch01_kp2"
+    ],
+    "reference_answer": {
+      "content": "(a) The reporter should use the median.\n(b) For a right-skewed distribution, mean > median.",
+      "explanation": "The mean is the balance point of the distribution, so the small number of extremely large incomes pulls it far to the right. That makes the mean larger than the income of a typical household. The median is resistant: it depends only on the position of the middle value, so extreme values in the right tail barely move it. Because the distribution is strongly right-skewed, the median is the better summary of a typical value, and the correct ordering is mean > median. A complete explanation must also say why the mean moves (it is a balance point / it uses the actual values) rather than just asserting that the mean is bigger."
+    },
+    "chapter": "ch01",
+    "subject": "ap_statistics",
+    "course": "AP"
+  },
+  {
+    "id": "ap_stats_ch01_q2",
+    "title": "Computing and interpreting a standard deviation",
+    "content": "A small data set gives the number of minutes five students spent on homework last night:\n\n12, 15, 18, 20, 35\n\n(a) Compute the mean.\n(b) Compute the standard deviation. Show the deviations and their squares.\n(c) Explain in context what the standard deviation tells you, and state one reason the value is larger than you might expect.",
+    "type": "calculation",
+    "difficulty": 4,
+    "knowledge_points": [
+      "ap_stats_ch01_kp3",
+      "ap_stats_ch01_kp2"
+    ],
+    "reference_answer": {
+      "content": "(a) Mean = (12 + 15 + 18 + 20 + 35) / 5 = 100 / 5 = 20 minutes.\n(b) Deviations: -8, -5, -2, 0, 15. Squares: 64, 25, 4, 0, 225. Sum = 318. s = sqrt(318 / 4) = sqrt(79.5) = 8.92 minutes.\n(c) The typical distance of a student's homework time from the mean of 20 minutes is about 8.9 minutes. The value is large because the observation 35 is an outlier that inflates the sum of squared deviations.",
+      "explanation": "The key ideas are: divide by n - 1 = 4 in the variance because s estimates the spread of the population from a sample; the standard deviation is a typical distance from the mean, not a range; and squaring the deviations means the extreme value 35 contributes 225 out of the total 318, so a single outlier dominates. Students who divide by n get 7.97, which is a common and identifiable error. A strong answer interprets s in context with units (minutes) and connects the size of s to the outlier."
+    },
+    "chapter": "ch01",
+    "subject": "ap_statistics",
+    "course": "AP"
+  },
+  {
+    "id": "ap_stats_ch01_q3",
+    "title": "Effect of a recording error on summary statistics",
+    "content": "A researcher records the mass of 30 laboratory mice in grams. The mean is 24.0 g with a standard deviation of 3.0 g, and the median is 23.8 g with an IQR of 4.1 g.\n\nThe researcher later discovers that one mouse recorded as 240 g should actually have been 24.0 g — a decimal-point error.\n\nExplain how correcting this single value affects the mean, the median, the standard deviation and the IQR. Justify each effect.",
+    "type": "application",
+    "difficulty": 4,
+    "knowledge_points": [
+      "ap_stats_ch01_kp1",
+      "ap_stats_ch01_kp3"
+    ],
+    "reference_answer": {
+      "content": "The mean decreases and the standard deviation decreases a lot. The median and the IQR are essentially unchanged.",
+      "explanation": "The mean uses every value, so replacing 240 with 24 removes a value far above the mean and pulls the mean down. The standard deviation squares deviations from the mean, so that same extreme value dominated the sum of squares; correcting it shrinks s substantially. The median and quartiles depend only on position in the ordered list. The corrected value is still near the middle of the data, so the middle value and the quartile positions do not move, leaving the median and IQR essentially unchanged. This is exactly why median and IQR are described as resistant statistics. The strongest answers quantify the direction (down, down, unchanged, unchanged) and explain that resistance comes from using position rather than magnitude."
+    },
+    "chapter": "ch01",
+    "subject": "ap_statistics",
+    "course": "AP"
+  }
+]

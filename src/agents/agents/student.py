@@ -4,6 +4,8 @@ import os
 from langchain_core.messages import AIMessage, SystemMessage
 
 from ..base import State
+from ..demo import peer_follow_up
+from ..llm.health import active_mode
 from ..models import get_llm, stream_or_chat
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,12 +22,30 @@ class StudentAgent:
         try:
             curr_question = state.question[0]
             evaluation = state.evaluation
+            language = getattr(state, "language", "en")
+
+            # 演示模式：没有可用模型时用模板化追问兜底
+            if active_mode() == "demo":
+                human_turns = sum(
+                    1 for m in state.messages if getattr(m, "type", "") == "human"
+                )
+                last_human = next(
+                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
+                    None,
+                )
+                content = peer_follow_up(
+                    curr_question,
+                    str(getattr(last_human, "content", "")),
+                    evaluation,
+                    turn=max(human_turns - 1, 0),
+                    language=language,
+                )
+                return {"messages": AIMessage(content=content)}
 
             prompt_path = os.path.join(PROMPTS_DIR, "student_agent_prompt2.txt")
             with open(prompt_path, "r", encoding="utf-8") as f:
                 prompt_template = f.read()
 
-            language = getattr(state, "language", "en")
             if language == "zh":
                 lang_instruction = "你必须完全用中文回复，用中文提问。"
             else:

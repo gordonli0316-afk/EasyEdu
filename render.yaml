@@ -1,0 +1,27 @@
+# Render Blueprint — deploy EasyEdu as a public HTTPS website.
+#
+# In the Render dashboard: New + -> Blueprint -> connect this repository.
+# Render reads this file, builds the app, and gives you a URL such as
+# https://easyedu.onrender.com that anyone can open without any setup.
+#
+# Free plan notes: the instance sleeps after ~15 minutes of inactivity, so the
+# first visit after a pause takes 30-60 seconds to wake up. Everything else
+# (HTTPS, custom domain, health checks) works on the free plan.
+services:
+  - type: web
+    name: easyedu
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn web.main:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      # "demo" needs no API key and keeps the site fully usable for reviewers.
+      # Switch to deepseek/tongyi and add the matching key to use a real model.
+      - key: EASYEDU_LLM_BACKEND
+        value: demo
+      # - key: DEEPSEEK_API_KEY
+      #   sync: false

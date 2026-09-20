@@ -1,0 +1,14 @@
+[
+  {
+    "id": "ch01",
+    "title": "Exploring One-Variable Data (单变量数据分析)",
+    "description": "Describing distributions with shape, outliers, center and spread.",
+    "knowledge_points": ["ap_stats_ch01_kp1", "ap_stats_ch01_kp2", "ap_stats_ch01_kp3"]
+  },
+  {
+    "id": "ch02",
+    "title": "Probability and Sampling Distributions (概率与抽样分布)",
+    "description": "Random variables, the sampling distribution of a proportion, and the Central Limit Theorem.",
+    "knowledge_points": ["ap_stats_ch02_kp1", "ap_stats_ch02_kp2", "ap_stats_ch02_kp3"]
+  }
+]

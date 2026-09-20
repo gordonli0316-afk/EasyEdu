@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ap_physics_ch01_kp1",
+    "title": "Position, Velocity and Acceleration",
+    "summry": "Position x locates an object relative to a chosen origin. Velocity v = dx/dt is the rate of change of position, and its sign gives direction. Acceleration a = dv/dt is the rate of change of velocity. The slope of an x-t graph is velocity; the slope of a v-t graph is acceleration; the area under a v-t graph is displacement. An object can have zero velocity and non-zero acceleration (a ball at the top of its flight), or constant speed and non-zero acceleration (circular motion)."
+  },
+  {
+    "id": "ap_physics_ch01_kp2",
+    "title": "Constant-Acceleration Kinematic Equations",
+    "summry": "For constant acceleration: v = v0 + at, x = x0 + v0 t + (1/2) a t^2, and v^2 = v0^2 + 2a(x - x0). These are only valid when a is constant, and all quantities are vectors along one axis, so signs matter. Choose the positive direction once and apply it consistently. A common strategy is to list the knowns (x, x0, v0, v, a, t), identify the unknown, and pick the equation that contains exactly those symbols."
+  },
+  {
+    "id": "ap_physics_ch01_kp3",
+    "title": "Free Fall",
+    "summry": "Near Earth's surface and neglecting air resistance, every object falls with the same downward acceleration of magnitude g = 9.8 m/s^2, independent of mass. If upward is taken as positive then a = -9.8 m/s^2. At the highest point of a vertical throw the velocity is momentarily zero but the acceleration is still -9.8 m/s^2. Free fall is just constant-acceleration motion with a = -g, so the kinematic equations apply directly."
+  },
+  {
+    "id": "ap_physics_ch02_kp1",
+    "title": "Newton's Second Law",
+    "summry": "The net force on an object equals its mass times its acceleration: sum F = ma. It is a vector equation, so it applies independently along each axis. Acceleration is always in the direction of the net force, not necessarily in the direction of motion. If the net force is zero the object moves with constant velocity (which may be zero). Mass measures inertia: the same force produces a smaller acceleration on a larger mass."
+  },
+  {
+    "id": "ap_physics_ch02_kp2",
+    "title": "Free-Body Diagrams",
+    "summry": "A free-body diagram shows only the forces acting on one chosen object, drawn as arrows from a single point. Include weight, normal force, tension, friction and any applied force; never include forces the object exerts on other things. Choose axes along the direction of motion or along an incline, break forces into components, then write sum F = ma for each axis. The normal force is not automatically equal to the weight — it is whatever value satisfies the perpendicular equation."
+  },
+  {
+    "id": "ap_physics_ch02_kp3",
+    "title": "Static and Kinetic Friction",
+    "summry": "Static friction adjusts itself to prevent relative sliding, from zero up to a maximum f_s,max = mu_s N. Kinetic friction acts opposite to relative sliding with f_k = mu_k N, and mu_k is usually smaller than mu_s. Friction depends on the normal force and the surfaces, not on contact area or speed (in the simple model). If the required static friction exceeds f_s,max, the object slips and friction becomes kinetic."
+  }
+]

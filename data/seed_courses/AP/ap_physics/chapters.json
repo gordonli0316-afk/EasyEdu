@@ -1,0 +1,14 @@
+[
+  {
+    "id": "ch01",
+    "title": "Kinematics in One Dimension (一维运动学)",
+    "description": "Position, velocity, acceleration and the constant-acceleration equations.",
+    "knowledge_points": ["ap_physics_ch01_kp1", "ap_physics_ch01_kp2", "ap_physics_ch01_kp3"]
+  },
+  {
+    "id": "ch02",
+    "title": "Forces and Newton's Laws (力与牛顿定律)",
+    "description": "Free-body diagrams, Newton's second law, friction and connected objects.",
+    "knowledge_points": ["ap_physics_ch02_kp1", "ap_physics_ch02_kp2", "ap_physics_ch02_kp3"]
+  }
+]

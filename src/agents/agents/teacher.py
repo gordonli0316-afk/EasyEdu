@@ -6,6 +6,8 @@ from langchain_core.messages import AIMessage, SystemMessage
 from langgraph.types import Command
 
 from ..base import State
+from ..demo import tutor_feedback
+from ..llm.health import active_mode
 from ..models import get_llm, stream_or_chat
 from data.courses_loader import CoursesDataLoader
 
@@ -61,6 +63,25 @@ class TeacherAgent:
         try:
             curr_question = state.question[0]
             evaluation = state.evaluation
+            language = getattr(state, "language", "en")
+
+            # 演示模式：没有可用模型时，用参考答案 + 知识点摘要给出教师反馈
+            if active_mode() == "demo":
+                last_human = next(
+                    (m for m in reversed(state.messages) if getattr(m, "type", "") == "human"),
+                    None,
+                )
+                content = tutor_feedback(
+                    curr_question,
+                    str(getattr(last_human, "content", "")),
+                    evaluation,
+                    loader=_get_loader(),
+                    language=language,
+                )
+                return Command(
+                    update={"messages": AIMessage(content=content)},
+                    goto="__end__",
+                )
 
             prompt_path = os.path.join(PROMPTS_DIR, "teacher_agent_prompt.txt")
             with open(prompt_path, "r", encoding="utf-8") as f:
@@ -71,7 +92,6 @@ class TeacherAgent:
             if knowledge_points:
                 knowledge_context = await knowledge_summry_search(knowledge_points)
 
-            language = getattr(state, "language", "en")
             if language == "zh":
                 lang_instruction = "你必须完全用中文回复，包括所有解释、提问和总结。"
             else:

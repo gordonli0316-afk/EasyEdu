@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from typing import Optional
 from web.models.schemas import SessionCreate
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 import json
 import asyncio
 import logging  # 添加日志模块
@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 @router.post("/sessions", tags=["sessions"])
 async def create_session(session_data: SessionCreate):
@@ -91,5 +91,8 @@ async def delete_session(session_id: str):
         if not success:
             raise HTTPException(status_code=404, detail=f"会话未找到: {session_id}")
         return {"message": "会话已删除"}
+    except HTTPException:
+        # 不要把 404 之类的正常错误重新包成 500
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 

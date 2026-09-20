@@ -11,11 +11,11 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from src.services.video_recommender import VideoRecommender
-from web.services.qa_service import QAService
+from web.services.qa_service import get_qa_service
 
 router = APIRouter()
 video_recommender = VideoRecommender()
-qa_service = QAService()
+qa_service = get_qa_service()
 
 
 @router.get("/questions/{question_id}/videos", tags=["videos"])

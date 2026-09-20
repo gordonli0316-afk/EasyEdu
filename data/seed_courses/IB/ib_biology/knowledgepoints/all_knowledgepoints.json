@@ -1,0 +1,27 @@
+[
+  {
+    "id": "ib_bio_ch01_kp1",
+    "title": "Prokaryotic and Eukaryotic Cells",
+    "summry": "Prokaryotic cells (bacteria and archaea) have no nucleus and no membrane-bound organelles; their DNA is a single circular chromosome in the nucleoid region, they have 70S ribosomes, and they may carry plasmids and a cell wall. Eukaryotic cells have a true nucleus bounded by a double membrane and compartmentalised organelles (mitochondria, endoplasmic reticulum, Golgi apparatus), with 80S ribosomes. Compartmentalisation allows incompatible reactions to occur at the same time and increases the surface area available for enzyme-controlled reactions."
+  },
+  {
+    "id": "ib_bio_ch01_kp2",
+    "title": "The Fluid Mosaic Model",
+    "summry": "The membrane is a phospholipid bilayer in which hydrophilic phosphate heads face the aqueous surroundings and hydrophobic fatty acid tails face inward. Proteins are embedded in a mosaic pattern and can move laterally, which makes the membrane fluid. Cholesterol modulates fluidity and permeability. Integral proteins act as channels and pumps, peripheral proteins act in signalling and attachment, and glycoproteins and glycolipids function in cell recognition. The model explains selective permeability because small non-polar molecules cross freely while ions and large polar molecules need transport proteins."
+  },
+  {
+    "id": "ib_bio_ch01_kp3",
+    "title": "Osmosis, Diffusion and Active Transport",
+    "summry": "Simple diffusion and facilitated diffusion are passive: they move substances down a concentration gradient with no ATP, though facilitated diffusion uses channel or carrier proteins. Osmosis is the passive movement of water across a partially permeable membrane from a region of lower solute concentration (higher water potential) to higher solute concentration. Active transport moves substances against the concentration gradient using protein pumps and ATP hydrolysis, for example the sodium-potassium pump. Cells in a hypotonic solution swell and may lyse; in a hypertonic solution they shrink and become crenated or plasmolysed."
+  },
+  {
+    "id": "ib_bio_ch02_kp1",
+    "title": "Enzyme Specificity and the Active Site",
+    "summry": "Enzymes are globular proteins that lower the activation energy of a reaction. The substrate binds to a specific active site, forming an enzyme-substrate complex; the shape of the active site is complementary to the substrate, which is why most enzymes are highly specific (the lock-and-key idea, refined by induced fit, in which the active site changes shape slightly on binding to strain the substrate). Enzymes are not consumed and can be reused. Denaturation destroys the tertiary structure of the active site and permanently removes catalytic activity."
+  },
+  {
+    "id": "ib_bio_ch02_kp2",
+    "title": "Factors Affecting Enzyme Activity",
+    "summry": "Rate of reaction increases with temperature up to an optimum because molecules collide more often with more energy; above the optimum, hydrogen and ionic bonds break, the active site denatures and the rate falls sharply. Each enzyme has an optimum pH, at which the charges in the active site are correct for binding; extreme pH denatures the enzyme. Increasing substrate concentration increases rate until all active sites are saturated, after which rate plateaus - this shows the enzyme concentration is now limiting. Inhibitors reduce activity: competitive inhibitors bind the active site and can be overcome by more substrate, while non-competitive inhibitors bind elsewhere and change the active site shape."
+  }
+]

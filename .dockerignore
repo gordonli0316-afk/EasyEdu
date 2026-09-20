@@ -1,0 +1,27 @@
+# Keep the build context small and never bake secrets or local state into the image.
+.git
+.gitignore
+.github
+.venv
+venv
+env
+__pycache__/
+*.py[cod]
+*.egg-info/
+.DS_Store
+
+# Local secrets and runtime state
+.env
+.env.*
+!.env.example
+data/uploads/
+data/exports/
+data/rlhf_data/
+data/courses/*
+!data/courses/README.md
+textbooks/
+output/
+checkpoints/
+*.log
+docs/
+deliverables/

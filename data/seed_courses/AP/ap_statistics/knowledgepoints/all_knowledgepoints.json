@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ap_stats_ch01_kp1",
+    "title": "Center: Mean vs Median",
+    "summry": "The mean is the balance point of a distribution: it is pulled toward the long tail, so it is not resistant to outliers or skewness. The median is the middle value in ordered data: it only depends on position, so it is resistant. For a symmetric distribution mean = median. For a right-skewed distribution mean > median; for a left-skewed distribution mean < median. When a distribution is strongly skewed or has extreme outliers, report the median (with the IQR) as the better summary of a typical value."
+  },
+  {
+    "id": "ap_stats_ch01_kp2",
+    "title": "Describing a Distribution (SOCS)",
+    "summry": "Describe a distribution with four features: Shape (symmetric, skewed left/right, unimodal/bimodal), Outliers (using the 1.5 x IQR rule), Center (mean or median), and Spread (range, IQR, or standard deviation). Always describe in the context of the variable and its units. A clear description names the variable, gives the shape, and then gives center and spread with the appropriate measure for that shape."
+  },
+  {
+    "id": "ap_stats_ch01_kp3",
+    "title": "Standard Deviation and IQR",
+    "summry": "The standard deviation measures the typical distance of an observation from the mean, s = sqrt( sum (x_i - xbar)^2 / (n - 1) ). It is interpreted as a typical deviation from the mean, it is never negative, and it is strongly affected by outliers. The interquartile range IQR = Q3 - Q1 measures the spread of the middle 50% of the data and is resistant to outliers. Use s with the mean and IQR with the median."
+  },
+  {
+    "id": "ap_stats_ch02_kp1",
+    "title": "Law of Large Numbers",
+    "summry": "As the number of independent trials increases, the observed relative frequency of an outcome gets closer to its true probability. Short-run results are highly variable and can look surprising, but that variability shrinks as n grows. The law of large numbers says nothing about 'evening out' in the short run (the so-called gambler's fallacy); it describes the long-run behaviour of the proportion."
+  },
+  {
+    "id": "ap_stats_ch02_kp2",
+    "title": "Sampling Distribution of a Sample Proportion",
+    "summry": "For a random sample of size n from a population with proportion p, the sample proportion p-hat has mean mu_p-hat = p and standard deviation sigma_p-hat = sqrt( p(1-p) / n ). It is approximately Normal when the Large Counts condition holds: np >= 10 and n(1-p) >= 10. The standard deviation shrinks like 1/sqrt(n), so quadrupling the sample size halves the spread."
+  },
+  {
+    "id": "ap_stats_ch02_kp3",
+    "title": "Central Limit Theorem",
+    "summry": "The Central Limit Theorem states that for a random sample of size n from any population with mean mu and finite standard deviation sigma, the sampling distribution of the sample mean xbar becomes approximately Normal as n grows, with mean mu and standard deviation sigma/sqrt(n). The approximation improves with larger n; if the population is already Normal the sampling distribution is Normal for every n. The CLT is the reason we can use Normal-based inference for means."
+  }
+]
